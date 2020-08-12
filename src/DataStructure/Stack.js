@@ -1,8 +1,10 @@
+// 栈：常用于回退动作，如浏览器的回退历史页面按钮
+
 /**
  * @description 使用数组来实现栈
  */
 
-export class ArrayStack {
+class ArrayStack {
   constructor() {
     this.data = [];
   }
@@ -32,6 +34,7 @@ export class ArrayStack {
     this.data = [];
   }
 
+  // 返回栈的长度
   size() {
     return this.data.length;
   }
@@ -42,7 +45,7 @@ export class ArrayStack {
     for (let i = 0; i < this.data.length; i++) {
       contentMsg += this.data[i];
       if (i !== this.data.length - 1) {
-        contentMsg += '';
+        contentMsg += ',';
       }
     }
     return `${baseMsg}${contentMsg}`;
@@ -53,7 +56,7 @@ export class ArrayStack {
 /**
  * @description 使用对象来实现栈
  */
-export class ObjectStack {
+class ObjectStack {
   constructor() {
     this.count = 0;
     this.data = {};
@@ -71,7 +74,7 @@ export class ObjectStack {
       return undefined;
     }
     const result = this.data[this.count - 1];
-    delete this.data[this.count];
+    delete this.data[this.count - 1];
     this.count--;
     return result;
   }
@@ -95,6 +98,7 @@ export class ObjectStack {
     this.count = 0;
   }
 
+  // 返回栈的长度
   size() {
     return this.count;
   }
@@ -105,7 +109,7 @@ export class ObjectStack {
     for (let i = 0; i < this.count; i++) {
       contentMsg += this.data[i];
       if (i !== this.count - 1) {
-        contentMsg += '';
+        contentMsg += ',';
       }
     }
     return `${baseMsg}${contentMsg}`;
@@ -113,3 +117,7 @@ export class ObjectStack {
 
 }
 
+module.exports = {
+  ArrayStack,
+  ObjectStack
+}

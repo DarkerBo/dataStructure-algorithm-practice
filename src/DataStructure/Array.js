@@ -1,3 +1,5 @@
+// 数据结构 —— 数组 插入或删除元素的时间复杂度为O(n),访问元素的时间复杂度为O(1)
+
 class _Array {
   constructor(arg) {
     if (!arg) {

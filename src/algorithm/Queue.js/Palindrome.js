@@ -3,7 +3,7 @@
 // 有不同的算法可以检查一个词组或字符串是否为回文。最简单的方式是将字符串反向排列并
 // 检查它和原字符串是否相同。如果两者相同，那么它就是一个回文。我们也可以用栈来完成，但
 // 是利用数据结构来解决这个问题的最简单方法是使用双端队列。
-const { ObjectDeque } = require('../../DataStructure/Deque');
+const { ObjectDeque } = require('../../DataStructure/Queue');
 
 function palindromeChecker(str) {
   if (!str) return false;

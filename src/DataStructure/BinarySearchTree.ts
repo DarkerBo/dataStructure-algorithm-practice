@@ -1,5 +1,4 @@
-
-// 数据结构 —— 树 插入或删除元素的时间复杂度为O(1),访问元素的时间复杂度为O(n)
+// 数据结构 —— 二叉搜索树（BST）
 // 二叉树中的节点最多只能有两个子节点：一个是左侧子节点，另一个是右侧子节点。这个定义有助于我们写出更高效地在树中插入、查找和删除节点的算法。
 // 二叉搜索树（BST）是二叉树的一种，但是只允许你在左侧节点存储（比父节点）小的值，在右侧节点存储（比父节点）大的值
 // 若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值，若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值。
@@ -67,8 +66,6 @@ export class BST<E> {
     return node;
   }
 
-
-
   // 删除最小值的节点,如果left为空，那最小那个就是父节点了，然后就把父节点删除，right就为root
   // right为null的话，root也变成null了, 如果right有值，那就把值赋给root
   private _removeMin(node: BinaryTreeNode<E>): BinaryTreeNode<E> | null {
@@ -134,12 +131,12 @@ export class BST<E> {
 
   // 获取长度
   public getSize(): number {
-    return this.size
+    return this.size;
   }
 
   // 判断是否为空
   public isEmpty(): boolean {
-    return this.size === 0
+    return this.size === 0;
   }
 
   // 递归(Recursive)方式插入新元素
@@ -238,7 +235,7 @@ export class BST<E> {
     }
   }
 
-  // 非递归方式找出最小值
+  // 非递归方式找出最小值(树的最左边的叶节点)
   public findMin(): E {
     if (!this.root) throw new Error('BST is empty!');
 
@@ -251,7 +248,7 @@ export class BST<E> {
     return current.element;
   }
 
-  // 递归方式找出最小值
+  // 递归方式找出最小值(树的最左边的叶节点)
   public findMinWR(node: BinaryTreeNode<E> | null = this.root): E | null {
     if (!node) return null;
 
@@ -259,7 +256,7 @@ export class BST<E> {
     else return this.findMinWR(node.left);
   }
 
-  // 非递归方式找出最小值
+  // 非递归方式找出最大值(树的最右边的叶节点)
   public findMax(): E {
     if (!this.root) throw new Error('BST is empty!');
 
@@ -293,27 +290,19 @@ export class BST<E> {
 
 }
 
-const binaryTree = new BST<number>();
-binaryTree.insert(5);
-binaryTree.insert(4);
-binaryTree.insert(3);
-binaryTree.insert(2);
-binaryTree.insert(1);
-binaryTree.insert(0);
-binaryTree.removeMin();
-
-// binaryTree.insert(0);
-// binaryTree.insert(1);
-// binaryTree.insert(2);
-// binaryTree.insert(3);
-// binaryTree.insert(4);
+// const binaryTree = new BST<number>();
 // binaryTree.insert(5);
-// binaryTree.removeMax();
+// binaryTree.insert(4);
+// binaryTree.insert(3);
+// binaryTree.insert(2);
+// binaryTree.insert(1);
+// binaryTree.insert(0);
+// binaryTree.removeMin();
 
-// binaryTree.insert(23);
-// binaryTree.insert(16);
-// binaryTree.insert(45);
-// binaryTree.removeMax();
+// // binaryTree.insert(23);
+// // binaryTree.insert(16);
+// // binaryTree.insert(45);
+// // binaryTree.removeMax();
 
-console.log(binaryTree);
+// console.log(binaryTree);
 

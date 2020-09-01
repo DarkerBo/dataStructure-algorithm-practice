@@ -88,20 +88,26 @@ export class AVLTree<E> {
 
     const balanceFactor = this.getBalanceFactor(node);
 
-    // 左左平衡
+    // 左-左(LL): 向右的单旋转
+    // 当节点的左侧子节点的高度大于右侧子节点的高度时，并且左侧子节点也是平衡或左侧较重，此时就需要对平衡树进行LL操作
     if (balanceFactor > 1 && this.getBalanceFactor(node.left) >= 0) {
       return this.rightRotate(node);
     }
-    // 右右平衡
+    // 右-右(RR): 向左的单旋转
+    // 当节点右侧子节点的高度大于左侧子节点的高度时，并且右侧子节点也是平衡或右侧较重，此时就需要对平衡树进行RR操作
     if (balanceFactor < -1 && this.getBalanceFactor(node.right) <= 0) {
       return this.leftRotate(node);
     }
-    // 有拐点左右平衡
+    // 左-右(LR): 向右的双旋转
+    // 当左侧子节点的高度大于右侧子节点的高度时，并且左侧子节点右侧较重，此时就需要对平衡树进行左旋转来修复，这样就会形成左-左的情况，然后在对不平衡的节点进行一个右旋转来修复
+    // 有左拐点就左右旋
     if (balanceFactor > 1 && this.getBalanceFactor(node.left) < 0) {
       node.left = this.leftRotate(node.left as AVLTreeNode<E>);
       return this.rightRotate(node);
     }
-    // 有拐点右左平衡
+    // 右-左(RL): 向左的双旋转
+    // 当右侧子节点的高度大于左侧子节点的高度时，并且右侧子节点左侧较重，此时就需要对平衡树进行右旋转进行修复，这样会形成右-右的情况，然后在对不平衡的节点进行一个左旋转来修复
+    // 有右拐点就右左旋
     if (balanceFactor < -1 && this.getBalanceFactor(node.right) > 0) {
       node.right = this.rightRotate(node.right as AVLTreeNode<E>);
       return this.leftRotate(node);

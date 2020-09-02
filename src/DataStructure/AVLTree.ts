@@ -115,5 +115,66 @@ export class AVLTree<E> {
     return node;
   }
 
+  // 查找node中的最小节点
+  private _findMinNode(node: AVLTreeNode<E>): AVLTreeNode<E> {
+    if (!node) throw new Error('AVLTree is Empty!');
+
+    if (node.left) node.left = this._findMinNode(node.left);
+    return node;
+  }
+
+  // 在node节点中插入元素
+  private _insert(node: AVLTreeNode<E> | null, value: E): AVLTreeNode<E> | null {
+    if (!node) {
+      this.size++;
+      return new AVLTreeNode<E>(value);
+    }
+
+    if (value < node.value) node.left = this._insert(node.left, value);
+    else if (value > node.value) node.right = this._insert(node.right, value);
+    else node.value = value;
+
+    node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+    return this.maintain(node);
+  }
+
+  // 根据value值删除node节点中的元素
+  private _remove(node: AVLTreeNode<E> | null, value: E): AVLTreeNode<E> | null {
+    if (!node) return null;
+
+    let retNode: AVLTreeNode<E> | null;
+
+    if (value < node.value) {
+      node.left = this._remove(node.left, value);
+      retNode = node;
+    } else if (value > node.value) {
+      node.right = this._remove(node.right, value);
+      retNode = node;
+    } else {
+      if (node.left === null) {
+        const rightNode = node.right;
+        node.right = null;
+        this.size--
+        retNode = rightNode;
+      } else if (node.right === null) {
+        const leftNode = node.left;
+        node.left = null;
+        this.size--
+        retNode = leftNode;
+      } else {
+        const successor = this._findMinNode(node.right);
+        successor.right = this._remove(node.right, successor.value);
+        successor.left = node.left;
+
+        node.left = node.right = null;
+        retNode = successor;
+      }
+    }
+
+    return this.maintain(retNode);
+  }
+
+  
+
 
 }

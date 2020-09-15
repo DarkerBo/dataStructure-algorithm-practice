@@ -20,19 +20,19 @@
 
 */
 
-type TreeType<E> = {
+type DFSTreeType<E> = {
   e: E;
-  children?: TreeType<E>[];
+  children?: DFSTreeType<E>[];
 }
 
 // 非递归深度优先搜索
-function depthFirstSearch<E>(tree: TreeType<E>, target: E): TreeType<E> | null {
+function depthFirstSearch<E>(tree: DFSTreeType<E>, target: E): DFSTreeType<E> | null {
   const stack = [tree];
   while (stack.length > 0) {
-    const stackTop = stack.pop() as TreeType<E>;
+    const stackTop = stack.pop() as DFSTreeType<E>;
     if (stackTop.e === target) return stackTop;
 
-    if (stackTop?.children && stackTop.children.length > 0) {
+    if (stackTop.children && stackTop.children.length > 0) {
       stack.push(...stackTop.children.reverse());
     }
   }
@@ -41,26 +41,30 @@ function depthFirstSearch<E>(tree: TreeType<E>, target: E): TreeType<E> | null {
 }
 
 // 递归深度优先搜索
-function depthFirstSearchWR<E>(tree: TreeType<E>, target: E): TreeType<E> | null {
-  let result = null;
+function depthFirstSearchWR<E>(tree: DFSTreeType<E>, target: E): DFSTreeType<E> | null {
+  const stack = [tree];
 
-  const dfs = (treeNode: TreeType<E>, target: E): TreeType<E> | void => {
-    if (treeNode.e === target)  return result = treeNode;
+  const dfs = (stack: DFSTreeType<E>[], target: E): DFSTreeType<E> | null => {
+    if (stack.length === 0) return null;
 
-    if (treeNode.children && treeNode.children.length > 0) {
-      for (let i = 0; i < treeNode.children.length; i++) {
-        dfs(treeNode.children[i], target);
-      }
+    const stackTop = stack.pop() as DFSTreeType<E>;
+    if (stackTop.e === target) return stackTop;
+
+    if (stackTop.children && stackTop.children.length > 0) {
+      stack.push(...stackTop.children.reverse());
     }
+
+    return dfs(stack, target);
   }
 
-  dfs(tree, target);
+  const result: DFSTreeType<E> | null = dfs(stack, target);
 
   return result;
 }
 
 
-const root = {
+
+const dfsTree = {
   e: '0',
   children: [
     {
@@ -105,4 +109,4 @@ const root = {
   ]
 }
 
-console.log(depthFirstSearchWR(root, '2-2-2'));
+console.log(depthFirstSearchWR(dfsTree, '2-2-2'));

@@ -110,3 +110,13 @@ const dfsTree = {
 }
 
 console.log(depthFirstSearchWR(dfsTree, '2-2-2'));
+
+
+// 使用案例 给定一个子子节点的e，获取其向上所有父节点的e
+// 思路1：给每个节点一个parentE(根节点为null)，通过parentE一直往上找，直到为null
+
+function getParentNodes<E>(tree: DFSTreeType<E>, target: E) {
+  // 深度遍历注入parentE
+  const queue = [tree];
+  
+}

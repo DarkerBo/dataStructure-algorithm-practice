@@ -20,14 +20,14 @@
 
 */
 
-type DFSTreeType<E> = {
+interface DFSTreeType<E> {
   e: E;
   children?: DFSTreeType<E>[];
 }
 
 // 非递归深度优先搜索
-function depthFirstSearch<E>(tree: DFSTreeType<E>, target: E): DFSTreeType<E> | null {
-  const stack = [tree];
+function depthFirstSearch<E>(data: DFSTreeType<E>[], target: E): DFSTreeType<E> | null {
+  const stack = [...data];
   while (stack.length > 0) {
     const stackTop = stack.pop() as DFSTreeType<E>;
     if (stackTop.e === target) return stackTop;
@@ -41,8 +41,8 @@ function depthFirstSearch<E>(tree: DFSTreeType<E>, target: E): DFSTreeType<E> | 
 }
 
 // 递归深度优先搜索
-function depthFirstSearchWR<E>(tree: DFSTreeType<E>, target: E): DFSTreeType<E> | null {
-  const stack = [tree];
+function depthFirstSearchWR<E>(data: DFSTreeType<E>[], target: E): DFSTreeType<E> | null {
+  const stack = [...data];
 
   const dfs = (stack: DFSTreeType<E>[], target: E): DFSTreeType<E> | null => {
     if (stack.length === 0) return null;
@@ -64,7 +64,7 @@ function depthFirstSearchWR<E>(tree: DFSTreeType<E>, target: E): DFSTreeType<E> 
 
 
 
-const dfsTree = {
+const dfsTree = [{
   e: '0',
   children: [
     {
@@ -107,7 +107,7 @@ const dfsTree = {
       ],
     },
   ]
-}
+}]
 
 console.log(depthFirstSearchWR(dfsTree, '2-2-2'));
 
@@ -115,8 +115,62 @@ console.log(depthFirstSearchWR(dfsTree, '2-2-2'));
 // 使用案例 给定一个子子节点的e，获取其向上所有父节点的e
 // 思路1：给每个节点一个parentE(根节点为null)，通过parentE一直往上找，直到为null
 
-function getParentNodes<E>(tree: DFSTreeType<E>, target: E) {
-  // 深度遍历注入parentE
-  const queue = [tree];
-  
+interface DFSParentTreeType<E> {
+  e: E;
+  children?: DFSParentTreeType<E>[];
+  parentKey?: E | null;
 }
+
+// 深度遍历注入parentKey
+function setParentKey<E>(data: DFSTreeType<E>[]): DFSParentTreeType<E>[] {
+
+  const stack = [...data];
+  while (stack.length > 0) {
+    const stackTop = stack.pop() as DFSParentTreeType<E>;
+    // 将根节点parentKey设置为null
+    if (!stackTop.parentKey) stackTop.parentKey = null;
+
+    if (stackTop.children && stackTop.children.length > 0) {
+      for (let i = stackTop.children.length - 1; i >= 0; i--) {
+        stackTop.children[i].parentKey = stackTop.e;
+        stack.push(stackTop.children[i]);
+      }
+    }
+  }
+
+  return data;
+}
+
+// 将多维数组拉伸至一维数组
+function flatten<E>(data: DFSTreeType<E>[]): DFSParentTreeType<E>[] {
+  const parentKeyData = setParentKey(data);
+  return parentKeyData.reduce(
+    (prev: DFSTreeType<E>[], cur: DFSTreeType<E>) =>
+      cur.children && cur.children.length > 0 
+      ? [...prev, cur,  ...flatten(cur.children)]
+      : [...prev, cur],
+    [],
+  )
+
+}
+
+// 根据所传的值找出该节点和其所有的父节点
+function getParentNodes<E>(data: DFSTreeType<E>[], target: E): DFSParentTreeType<E>[] {
+  const flatTreeData = flatten(data);
+  const targetNode = flatTreeData.find(node => node.e === target);
+
+  if (!targetNode) return [];
+
+  const parentNodes: DFSParentTreeType<E>[] = [targetNode];
+  let parentKey = targetNode.parentKey;
+
+  while (parentKey) {
+    const parentNode = flatTreeData.find(node => node.e === parentKey) as DFSParentTreeType<E>;
+    parentNodes.unshift(parentNode);
+    parentKey = parentNode.parentKey;
+  }
+
+  return parentNodes;
+}
+
+console.log(getParentNodes(dfsTree, '2-2-2'));

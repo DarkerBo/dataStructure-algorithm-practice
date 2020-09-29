@@ -19,7 +19,7 @@
 
 */
 
-type BFSTreeType<E> = {
+interface BFSTreeType<E> {
   e: E;
   children?: BFSTreeType<E>[];
 }

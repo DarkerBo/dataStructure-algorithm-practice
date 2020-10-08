@@ -25,8 +25,8 @@ interface BFSTreeType<E> {
 }
 
 // 非递归广度优先搜索
-function breadthFirstSearch<E>(tree: BFSTreeType<E>, target: E): BFSTreeType<E> | null {
-  const queue = [tree];
+function breadthFirstSearch<E>(data: BFSTreeType<E>[], target: E): BFSTreeType<E> | null {
+  const queue = [...data];
   while (queue.length > 0) {
     const queueFront = queue.shift() as BFSTreeType<E>;
     if (queueFront.e === target) return queueFront;
@@ -40,8 +40,8 @@ function breadthFirstSearch<E>(tree: BFSTreeType<E>, target: E): BFSTreeType<E> 
 }
 
 // 递归广度优先搜索
-function breadthFirstSearchWR<E>(tree: BFSTreeType<E>, target: E): BFSTreeType<E> | null {
-  const queue = [tree];
+function breadthFirstSearchWR<E>(data: BFSTreeType<E>[], target: E): BFSTreeType<E> | null {
+  const queue = [...data];
 
   const bfs = (queue: BFSTreeType<E>[], target: E): BFSTreeType<E> | null => {
     if (queue.length === 0) return null; 
@@ -63,7 +63,7 @@ function breadthFirstSearchWR<E>(tree: BFSTreeType<E>, target: E): BFSTreeType<E
 
 
 
-const bfsTree = {
+const bfsTree = [{
   e: '0',
   children: [
     {
@@ -106,6 +106,6 @@ const bfsTree = {
       ],
     },
   ]
-}
+}]
 
 console.log(breadthFirstSearch(bfsTree, '2-2-2'));

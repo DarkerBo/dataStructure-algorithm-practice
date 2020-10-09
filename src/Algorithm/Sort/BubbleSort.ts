@@ -5,7 +5,7 @@
  * @description 冒泡排序
  * @param arr
  */
-export default function bubbleSort<T>(arr: T[]): T[] {
+export function bubbleSort<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
     for (let j = 0; j < i; j++) {
       if (arr[j] > arr[j + 1]) {
@@ -17,5 +17,5 @@ export default function bubbleSort<T>(arr: T[]): T[] {
   return arr;
 }
 
-const arr = [5,8,2,7,9,1,10,0];
+const arr = [ 5, 8, 2, 7, 9, 1, 10, 0 ];
 console.log(bubbleSort(arr));

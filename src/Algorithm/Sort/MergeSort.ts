@@ -8,3 +8,38 @@
 export function mergeSort<T>(arr: T[]) {
   
 }
+
+export function _merge<T>(arr: T[], left: number, right: number) {
+  // 若分成了每一段都为1个元素即停止
+  if (left === right) return;
+
+  const mid = ((left + right) / 2) | 0;
+  _merge(arr, left, mid);
+  _merge(arr, mid + 1, right);
+
+  let helper = [];
+  let i = 0;
+  let p1 = left;
+  let p2 = mid + 1;
+
+  // 开始对比两组有序数据的子元素大小，放进helper里面
+  while (p1 <= mid && p2 <= right) {
+    helper[i++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
+  }
+
+  // 若右组对比完，左组剩下的元素填充到
+  while (p1 <= mid) {
+    helper[i++] = arr[p1++];
+  }
+
+  // 若左组对比完，右组剩下的元素填充到
+  while (p2 <= right) {
+    helper[i++] = arr[p2++];
+  }
+
+  for (let i = 0; i < helper.length; i++) {
+    arr[left + i] = helper[i]
+  }
+
+  return arr;
+}

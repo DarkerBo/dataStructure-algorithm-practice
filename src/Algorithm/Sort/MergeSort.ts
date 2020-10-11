@@ -5,41 +5,53 @@
  * @description 归并排序
  * @param arr
  */
-export function mergeSort<T>(arr: T[]) {
-  
+export function mergeSort<T>(arr: T[]): T[] {
+  _mergeSort(arr, 0, arr.length - 1);
+  return arr;
 }
 
-export function _merge<T>(arr: T[], left: number, right: number) {
+/**
+ * @description 归并排序辅助函数
+ * @param arr
+ * @param left arr数组的左指针
+ * @param right arr数组的右指针
+ */
+function _mergeSort<T>(arr: T[], left: number, right: number): T[] | void {
   // 若分成了每一段都为1个元素即停止
   if (left === right) return;
 
-  const mid = ((left + right) / 2) | 0;
-  _merge(arr, left, mid);
-  _merge(arr, mid + 1, right);
+  // 位运算，向下取整
+  const mid: number = ((left + right) / 2) | 0;
+  _mergeSort(arr, left, mid);
+  _mergeSort(arr, mid + 1, right);
 
-  let helper = [];
-  let i = 0;
-  let p1 = left;
-  let p2 = mid + 1;
+  const helper: T[] = []; // 拿来中间过渡存储数据的数组
+  let i: number = 0; // 过渡数组的索引
+  let p1: number = left; // 左数组的指针
+  let p2: number = mid + 1; // 右数组的指针
 
   // 开始对比两组有序数据的子元素大小，放进helper里面
   while (p1 <= mid && p2 <= right) {
     helper[i++] = arr[p1] < arr[p2] ? arr[p1++] : arr[p2++];
   }
 
-  // 若右组对比完，左组剩下的元素填充到
+  // 若右组对比完，左组剩下的元素填充到过渡数组中
   while (p1 <= mid) {
     helper[i++] = arr[p1++];
   }
 
-  // 若左组对比完，右组剩下的元素填充到
+  // 若左组对比完，右组剩下的元素填充到过渡数组中
   while (p2 <= right) {
     helper[i++] = arr[p2++];
   }
 
+  // 将过渡数组的元素赋值给arr
   for (let i = 0; i < helper.length; i++) {
-    arr[left + i] = helper[i]
+    arr[left + i] = helper[i];
   }
 
   return arr;
 }
+
+const arr = [ 5, 8, 2, 7, 9, 1, 10, 0 ];
+console.log(mergeSort(arr));

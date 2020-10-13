@@ -57,3 +57,37 @@ function _partition1<T>(arr: T[], left: number, right: number): number {
 
 const arr = [ 5, 8, 2, 7, 9, 1, 10, 0 ];
 console.log(quickSort(arr));
+
+
+/**
+ * @description 快速排序双路快排
+ * @param arr
+ * @param left arr数组的左指针
+ * @param right arr数组的右指针
+ */
+// function _partition2<T>(arr: T[], left: number, right: number): number {
+//   // 随机取值，然后和开头left交换，这样做比固定取一个位置的复杂度略低
+//   const randomNum: number = Math.floor(Math.random() * (right - left + 1)) + left;
+//   [arr[left], arr[randomNum]] = [arr[randomNum], arr[left]];
+
+//   const v: T = arr[left]; // arr中原本随机选取的索引
+//   let i: number = left + 1, // left的下一个索引，作为组成比randomNum索引中的值小的数组的指针
+//       j: number = right; // 右指针
+  
+//   while (true) {
+//     while (arr[i] < v) i++;
+//     while (arr[j] > v) j--;
+    
+//     if (i > j) break;
+
+//     [arr[i], arr[j]] = [arr[j], arr[i]];
+//     i++;
+//     j++;
+//   }
+
+  
+
+
+
+// }
+

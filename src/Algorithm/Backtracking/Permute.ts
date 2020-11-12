@@ -8,12 +8,12 @@ export function permute(nums: number[]): Array<number[]> {
   const res: Array<number[]> = [];
   const track: number[] = [];
 
-  backtrack(nums, track, res);
+  _permute(nums, track, res);
   return res;
 }
 
 // 辅助函数，也是框架函数
-function backtrack(nums: number[], track: number[], res: Array<number[]>): void {
+function _permute(nums: number[], track: number[], res: Array<number[]>): void {
   if (track.length === nums.length) {
     // Array.from是为了防止res内的路径track指向同一个地址，最终全为[]
     res.push(Array.from(track));
@@ -25,7 +25,7 @@ function backtrack(nums: number[], track: number[], res: Array<number[]>): void 
     if (track.includes(nums[i])) continue;
 
     track.push(nums[i]);
-    backtrack(nums, track, res);
+    _permute(nums, track, res);
     track.pop();
   }
 }
@@ -35,21 +35,28 @@ function backtrack(nums: number[], track: number[], res: Array<number[]>): void 
 export function permutePoint(nums: number[]) {
   const res: Array<number[]> = [];
 
-  backtrackPoint(nums, 0, nums.length - 1, res);
+  _permutePoint(nums, 0, nums.length - 1, res);
   return res;
 }
 
 // 辅助函数
-function backtrackPoint(nums: number[], from: number, to: number, res: Array<number[]>) {
+function _permutePoint(nums: number[], from: number, to: number, res: Array<number[]>) {
   // 指针from到达数组最后一个元素时表示排序完毕
   if (from === to) {
     res.push(Array.from(nums));
     return;
   }
 
+  // 检验是否有重复项
+  const checkRepeat: number[] = [];
+
   for (let i = from; i <= to; i++) {
+    // 若有重复项,则排序是一样的,跳过
+    if (checkRepeat.includes(nums[i])) continue;
+    checkRepeat.push(nums[i]);
+
     [nums[from], nums[i]] = [nums[i], nums[from]];
-    backtrackPoint(nums, from + 1, to, res);
+    _permutePoint(nums, from + 1, to, res);
     [nums[from], nums[i]] = [nums[i], nums[from]];
   }
 
@@ -57,7 +64,6 @@ function backtrackPoint(nums: number[], from: number, to: number, res: Array<num
 
 
 // const nums = [1, 2, 3];
-// console.log(permutePoint(nums));
+const nums = [1, 1, 3];
+console.log(permutePoint(nums));
 
-const nums = [1, 1, 2];
-console.log(permute(nums))

@@ -35,14 +35,14 @@ function _permute(nums: number[], track: number[], res: Array<number[]>): void {
 export function permutePoint(nums: number[]) {
   const res: Array<number[]> = [];
 
-  _permutePoint(nums, 0, nums.length - 1, res);
+  _permutePoint(nums, 0, res);
   return res;
 }
 
 // 辅助函数
-function _permutePoint(nums: number[], from: number, to: number, res: Array<number[]>) {
+function _permutePoint(nums: number[], from: number, res: Array<number[]>) {
   // 指针from到达数组最后一个元素时表示排序完毕
-  if (from === to) {
+  if (from === nums.length - 1) {
     res.push(Array.from(nums));
     return;
   }
@@ -50,13 +50,13 @@ function _permutePoint(nums: number[], from: number, to: number, res: Array<numb
   // 检验是否有重复项
   const checkRepeat: number[] = [];
 
-  for (let i = from; i <= to; i++) {
+  for (let i = from; i < nums.length; i++) {
     // 若有重复项,则排序是一样的,跳过
     if (checkRepeat.includes(nums[i])) continue;
     checkRepeat.push(nums[i]);
 
     [nums[from], nums[i]] = [nums[i], nums[from]];
-    _permutePoint(nums, from + 1, to, res);
+    _permutePoint(nums, from + 1, res);
     [nums[from], nums[i]] = [nums[i], nums[from]];
   }
 

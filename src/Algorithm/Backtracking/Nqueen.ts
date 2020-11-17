@@ -16,6 +16,7 @@ export function nqueen(num: number): Array<('.'|'Q')[]>[] {
 // N皇后辅助递归函数
 function _nqueen(board: Array<('.'|'Q')[]>, row: number, res: Array<('.'|'Q')[]>[]): void {
   if (row === board.length) {
+    // 因为是二阶数组，因此需要使用深拷贝
     res.push(JSON.parse(JSON.stringify(board)));
     return;
   }
@@ -29,6 +30,8 @@ function _nqueen(board: Array<('.'|'Q')[]>, row: number, res: Array<('.'|'Q')[]>
     board[row][col] = 'Q';
     _nqueen(board, row + 1, res);
     board[row][col] = '.';
+    
+    // if (res.length === 1) return; // 只需要一种结果的时候加上这个判断
   }
 }
 

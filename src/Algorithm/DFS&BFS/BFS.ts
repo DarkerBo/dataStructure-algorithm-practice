@@ -237,11 +237,15 @@ function toggle(type: 'up' | 'down', password: string, index: number): string {
 function openLock(deadends: string[], target: string): number {
 
   // 记录已经访问过的密码，防止走回头路，如0000转到1000，1000又转回0000 无限循环
-  const visitArr: string[] = [];
+  // 不能使用数组，因为查找是否包含的话数组的includes时间复杂度为O(n)，Set直接has时间复杂度为O(1)
+  const visitArr: Set<string> = new Set();
   // 需要操作密码的步数，其实就是树的第几层
   let depth: number = 0;
   // 初始队列
   const queue: string[] = ['0000'];
+  // 用Set的理由同上 为了降低查找的复杂度
+  const deadSet = new Set(deadends);
+
 
   while (queue.length > 0) {
     // 用变量装载初始queue的长度，防止循环拨动push新的密码到queue后queue的长度改变造成一直for循环
@@ -250,26 +254,26 @@ function openLock(deadends: string[], target: string): number {
     for (let i = 0; i < queueSize; i++) {
       const queueFront = queue.shift() as string;
       if (queueFront === target) return depth;
-      if (deadends.includes(queueFront)) continue;
+      if (deadSet.has(queueFront)) continue;
 
       // visitArr放在这里是因为visitArr保存的是当前访问过的节点q1Front，若放拨动的那个循环中保存的是拨动后所有的可能
       // 比如depth为1的时候放这里保存的是当前的节点是['0000', '0202'],然后不断一个个加'1000' '9000'
       // 放下面的话是保存下一次的可能直接['0000', '0202','1000', '9000', '0100', '0900', '0010', '0090', '0001', '0009']
       // 单向BFS放在这里和放在下面最终其实是一样的意思，最终都和一样的数组，但放在这里比较符合语境
-      visitArr.push(queueFront);
+      visitArr.add(queueFront);
 
       // 循环拨动第一到第四个密码
       for (let j = 0; j < 4; j++) {
         const upPwd = toggle('up', queueFront, j);
         const downPwd = toggle('down', queueFront, j);
 
-        if (!visitArr.includes(upPwd)) {
-          // visitArr.push(upPwd); // 放在这里保存的是下一次可能的路径，和放在上面其实是一样的意思
+        if (!visitArr.has(upPwd)) {
+          // visitArr.add(upPwd); // 放在这里保存的是下一次可能的路径，和放在上面其实是一样的意思
           queue.push(upPwd);
         }
 
-        if (!visitArr.includes(downPwd)) {
-          // visitArr.push(downPwd); // 放在这里保存的是下一次可能的路径，和放在上面其实是一样的意思
+        if (!visitArr.has(downPwd)) {
+          // visitArr.add(downPwd); // 放在这里保存的是下一次可能的路径，和放在上面其实是一样的意思
           queue.push(downPwd);
         }
       }
@@ -280,7 +284,7 @@ function openLock(deadends: string[], target: string): number {
   return -1
 }
 
-// console.log(openLock(["0201","0101","0102","1212","2002"], '0202'));
+console.log(openLock(["0201","0101","0102","1212","2002"], '0202'));
 
 
 /*
@@ -342,51 +346,55 @@ while (q1.length !== 0 && q2.length !== 0) {
 function openLockByTwoWay(deadends: string[], target: string): number {
   // 记录已经访问过的密码，防止走回头路，如0000转到1000，1000又转回0000 无限循环
   // 这里的visitArr需要为空,
-  const visitArr: string[] = [];
+  // 不能使用数组，因为查找是否包含的话数组的includes时间复杂度为O(n)，Set直接has时间复杂度为O(1)
+  const visitArr: Set<string> = new Set();
   // 需要操作密码的步数
   let depth: number = 0;
-  // 初始值队列
-  let q1: string[] = ['0000'];
-  // 目标值队列
-  let q2: string[] = [target];
+  // 初始值队列 用Set的理由同上 为了降低查找的复杂度
+  let q1: Set<string> = new Set(['0000']);
+  // 目标值队列 用Set的理由同上 为了降低查找的复杂度
+  let q2: Set<string> = new Set([target]);
+  // 用Set的理由同上 为了降低查找的复杂度
+  const deadSet = new Set(deadends);
 
-  while (q1.length > 0 && q2.length > 0) {
-    // 减少空间复杂度,优先循环长度小的那个队列
-    if (q1.length > q2.length) {
+  while (q1.size > 0 && q2.size > 0) {
+    // 临时存储拨动后的密码
+    const temp: Set<string> = new Set();
+
+    // 减少空间复杂度,优先循环长度小的那个队列d
+    if (q1.size > q2.size) {
       [q1, q2] = [q2, q1];
     }
 
-    const q1Size = q1.length;
-
-    for (let i = 0; i < q1Size; i++) {
-      const q1Front = q1.shift() as string;
-      // 这里不可以为q1Front === target，因为q1 q2互换了，此时的q1Front正是target
+    for (const q1Item of q1) {
+      if (deadSet.has(q1Item)) continue;
+       // 这里不可以为q1Front === target，因为q1 q2互换了，此时的q1Front正是target
       // 应该判断q2的路径里包含q1Front，即表示相遇了，可以结束了
-      if (q2.includes(q1Front)) return depth;
-      if (deadends.includes(q1Front)) continue;
+      if (q2.has(q1Item)) return depth;
      
       // 双向BFS不可以放下面，因为下面保存的是原q1【拨动后】的所有可能，如果调换后新q1(原q2)【拨动后】路径包含在visitArr中，则无法被push到新q1中，就永远无法相遇了
       // 放在这里保存的是原q1【拨动前】的路径，新q1拨动后的路径还是可以push到新q1中的，这样就可以判断是否与新q2相遇了
-      visitArr.push(q1Front);
+      visitArr.add(q1Item);
 
       for (let j = 0; j < 4; j++) {
-        const upPwd = toggle('up', q1Front, j);
-        const downPwd = toggle('down', q1Front, j);
+        const upPwd = toggle('up', q1Item, j);
+        const downPwd = toggle('down', q1Item, j);
 
-        if (!visitArr.includes(upPwd)) {
-          q1.push(upPwd);
+        if (!visitArr.has(upPwd)) {
+          temp.add(upPwd);
         }
 
-        if (!visitArr.includes(downPwd)) {
-          q1.push(downPwd);
+        if (!visitArr.has(downPwd)) {
+          temp.add(downPwd);
         }
       }
     }
-
     depth++;
-    [q1, q2] = [q2, q1];
+    q1 = q2;
+    q2 = temp;
   }
   return -1;
 }
 
-console.log(openLockByTwoWay(["0201","0101","0102","1212","2002"], '0202'))
+console.log(openLockByTwoWay(["0201","0101","0102","1212","2002"], '0202'));
+

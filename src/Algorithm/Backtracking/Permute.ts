@@ -1,4 +1,4 @@
-// 全排列
+// 全排列 LeetCode 46
 // 我们在高中的时候就做过排列组合的数学题，我们也知道 n 个不重复的数，全排列共有 n! 个
 
 // 题目：输入一组不重复的数字，返回它们的全排列
@@ -30,6 +30,7 @@ function _permute(nums: number[], track: number[], res: Array<number[]>): void {
   }
 }
 
+console.log(permute([1,2,3]));
 
 // 使用单指针写法: 使用指针from来改变nums的排序来保存路径
 export function permutePoint(nums: number[]) {
@@ -48,12 +49,12 @@ function _permutePoint(nums: number[], from: number, res: Array<number[]>) {
   }
 
   // 检验是否有重复项
-  const checkRepeat: number[] = [];
+  const checkRepeat: Set<number> = new Set();
 
   for (let i = from; i < nums.length; i++) {
     // 若有重复项,则排序是一样的,跳过
-    if (checkRepeat.includes(nums[i])) continue;
-    checkRepeat.push(nums[i]);
+    if (checkRepeat.has(nums[i])) continue;
+    checkRepeat.add(nums[i]);
 
     [nums[from], nums[i]] = [nums[i], nums[from]];
     _permutePoint(nums, from + 1, res);

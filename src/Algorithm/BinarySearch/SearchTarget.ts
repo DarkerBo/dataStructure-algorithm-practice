@@ -1,5 +1,6 @@
-// 经典案例 搜索target的索引
+// 经典案例 LeetCode 704 二分查找 (搜索target的索引)
 // 这个场景是最简单的，可能也是大家最熟悉的，即搜索一个数，如果存在，返回其索引，否则返回 -1。
+
 
 function binarySearch(nums: number[], target: number): number {
   let left = 0, right = nums.length - 1; // 注意

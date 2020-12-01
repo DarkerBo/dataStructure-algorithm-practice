@@ -80,7 +80,7 @@ needs: { A: 1, B: 1, C: 1 }  window: { A: 1, B: 0, C: 1 }
 
 */
 
-function minWindowBySlide(source: string, target: string): number {
+function minWindowBySlide(source: string, target: string): string {
   // need表示每个字母和它所需要的个数，window表示窗口包含的字母和它的个数
   const needs = new Map(), window = new Map;
   // 左右指针和已经满足个数的字母数量(计数器)
@@ -106,7 +106,7 @@ function minWindowBySlide(source: string, target: string): number {
 
     // 当计数器等于needs的key的长度，表示该窗口已经包含了target
     // 接下来是移动窗口左侧来找新的可能成立的窗口
-    while (vaild === Object.keys(needs).length) {
+    while (vaild === needs.size) {
       // 在这里更新最小覆盖子串的长度和起点
       if (right - left < len) {
         start = left;
@@ -125,8 +125,20 @@ function minWindowBySlide(source: string, target: string): number {
     }
   }
 
-  return isFinite(len) ? 0 : source.slice(start, start + len).length;
+  return !isFinite(len) ? '' : source.slice(start, start + len);
 }
 
 
 console.log(minWindowBySlide('EBBANCF', 'ABC'));
+
+/*
+需要注意的是，当我们发现某个字符在 window 的数量满足了 need 的需要，就要更新 valid，表示有一个字符已经满足要求。而且，你能发现，两次对窗口内数据的更新操作是完全对称的。
+
+当 valid == need.size() 时，说明 T 中所有字符已经被覆盖，已经得到一个可行的覆盖子串，现在应该开始收缩窗口了，以便得到「最小覆盖子串」。
+
+移动 left 收缩窗口时，窗口内的字符都是可行解，所以应该在收缩窗口的阶段进行最小覆盖子串的更新，以便从可行解中找到长度最短的最终结果。
+
+至此，应该可以完全理解这套框架了，滑动窗口算法又不难，就是细节问题让人烦得很。以后遇到滑动窗口算法，你就按照这框架写代码，保准没有 bug，还省事儿。
+
+*/
+

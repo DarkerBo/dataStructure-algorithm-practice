@@ -1,4 +1,4 @@
-// 找所有字母异位词
+// LeetCode第 438 题 找所有字母异位词
 /*
 给定一个字符串 s 和一个非空字符串 p，找到 s 中所有是 p 的字母异位词的子串，返回这些子串的起始索引。
 
@@ -68,7 +68,7 @@ function findAnagrams(source: string, target: string): number[] {
       left++;
       
       if (needs.has(d)) {
-        if (window.get(d) === needs.get(d)) vaild--
+        if (window.get(d) === needs.get(d)) vaild--;
         window.set(d, window.get(d) - 1);
       }
     }
@@ -79,5 +79,6 @@ function findAnagrams(source: string, target: string): number[] {
 
 console.log(findAnagrams('cbaebabacd', 'abc'));
 console.log(findAnagrams('abab', 'ab'));
+console.log(findAnagrams('baa', 'aa'));
 
 // 跟寻找字符串的排列一样，只是找到一个合法异位词（排列）之后将起始索引加入 res 即可。

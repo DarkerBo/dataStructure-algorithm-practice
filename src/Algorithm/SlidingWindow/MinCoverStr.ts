@@ -125,7 +125,7 @@ function minWindowBySlide(source: string, target: string): string {
     }
   }
 
-  return !isFinite(len) ? '' : source.slice(start, start + len);
+  return isFinite(len) ? source.slice(start, start + len) : '';
 }
 
 

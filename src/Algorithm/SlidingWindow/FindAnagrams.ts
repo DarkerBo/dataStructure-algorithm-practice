@@ -62,7 +62,7 @@ function findAnagrams(source: string, target: string): number[] {
 
     // 这里窗口长度与target长度相等就应该要移动左指针更新窗口
     while (right - left >= target.length) {
-      if (vaild === target.length) result.push(left);
+      if (vaild === needs.size) result.push(left);
 
       const d = source[left];
       left++;

@@ -41,9 +41,10 @@ function checkInclusion (source: string, target: string): boolean {
       if (window.get(c) === needs.get(c)) vaild++;
     }
 
+    // 第一种写法，其实这里判断的是长度是否等于
     // 这里窗口长度与target长度相等就应该要移动左指针更新窗口
     while (right - left >= target.length) {
-      if (vaild === target.length) return true;
+      if (vaild === needs.size) return true;
       const d = source[left];
       left++;
       if (needs.has(d)) {
@@ -51,11 +52,25 @@ function checkInclusion (source: string, target: string): boolean {
         window.set(d, window.get(d) - 1);
       }
     }
+
+    // 第二种写法，这里判断的是长度是否大于
+    // 这里判断条件写成大于，然后把长度相等时的判断条件写到循环外面
+    // while (right - left > target.length) {
+    //   const d = source[left];
+    //   left++;
+    //   if (needs.has(d)) {
+    //     if (window.get(d) === needs.get(d)) vaild--;
+    //     window.set(d, window.get(d) - 1);
+    //   }
+    // }
+
+    // if (vaild === needs.size) return true;
   }
 
   return false;
 }
 
+console.log(checkInclusion('eidboaoo', 'bd'));
 console.log(checkInclusion('eidboaoo', 'ab'));
 
 /*

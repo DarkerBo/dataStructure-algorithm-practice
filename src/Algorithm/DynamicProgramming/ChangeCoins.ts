@@ -34,7 +34,7 @@ export function coinMemo(coins: number[], amount: number): number {
 
   // 定义：要凑出金额 n，至少要 dp(n) 个硬币, 【确定状态】
   const dp = (num: number): number => {
-    if (memo.get(num) !== undefined) return memo.get(num);
+    if (memo.has(num)) return memo.get(num);
 
     // base 基本值判断
     if (num === 0) return 0;

@@ -18,14 +18,33 @@
 
 */
 
-// Memo备忘录的写法
+/*
+思路：
+题目很容易理解，而且动态规划的特征很明显。我们前文 动态规划详解 做过总结，解决动态规划问题就是找「状态」和「选择」，仅此而已。
+
+假想你就是这个专业强盗，从左到右走过这一排房子，在每间房子前都有两种选择：抢或者不抢。
+
+如果你抢了这间房子，那么你肯定不能抢相邻的下一间房子了，只能从下下间房子开始做选择。
+
+如果你不抢这间房子，那么你可以走到下一间房子前，继续做选择。
+
+当你走过了最后一间房子后，你就没得抢了，能抢到的钱显然是 0（base case）。
+
+以上的逻辑很简单吧，其实已经明确了「状态」和「选择」：你面前房子的索引就是状态，抢和不抢就是选择。
+
+rob[2..] => rob[3..] 
+         => nums[2] + rob[4..] (抢了2就不能抢3)
+*/
+
+// Memo备忘录的写法 其实是从上而下的，从 n 和 n-1 开始比较
+// 可以这样理解：[1,2,3,4,5] 最开始是0 5比较，dp[5] = 5, 然后就是 4 5 比较，dp[4] = 5, 然后是dp[4], dp[5] + 3 比较...
 function robFirstByMemo(nums: number[]): number {
   const memo = new Map();
   const dp = (nums: number[], n: number) => {
     if (n >= nums.length) return 0;
 
     if (memo.has(n)) return memo.get(n);
-    const res = Math.max(dp(nums, n + 1), nums[n] + dp(nums, n + 2));
+    const res = Math.max(dp(nums, n + 1), dp(nums, n + 2) + nums[n]);
     memo.set(n, res);
     return res;
   }
@@ -35,31 +54,40 @@ function robFirstByMemo(nums: number[]): number {
 
 // console.log(robFirstByMemo([1,2,3,1]));
 // console.log(robFirstByMemo([2,7,9,3,1]));
+// console.log(robFirstByMemo([0, 1, 2]));
 
 
-// DP写法
+// DP写法 说是说自底而上，但是看来看去都是自顶而下。。
 // 一般dp都是要加长一点长度，比nums大
 function robFirstByDP(nums: number[]): number {
   const n = nums.length;
-  const dp: number[] = new Array(n + 2).fill(0);
+  const dp = new Array(n + 2).fill(0);
   for (let i = n - 1; i >= 0; i--) {
-    dp[i] = Math.max(dp[i+1], dp[i+2] + nums[i]);
+    dp[i] = Math.max(dp[i + 1], dp[i + 2] + nums[i]);
   }
+
   return dp[0];
 }
 
-console.log(robFirstByDP([1,2,3,1]));
-console.log(robFirstByDP([2,7,9,3,1]));
+// console.log(robFirstByDP([1,2,3,1]));
+// console.log(robFirstByDP([2,7,9,3,1]));
+console.log(robFirstByDP([1,2,3]));
 
 
 // 空间复杂度为O(1)的变量写法
 function robFirstByVariable(nums: number[]): number {
-  let dp_0 = 0, dp_1 = 0;
-  for (let i = 0; i < nums.length; i++) {
-    dp_0 = Math.max(dp_0, dp_1 + nums[i]);
-    dp_1 = Math.max(dp_1, dp_0 + nums[i]);
+
+  // 分别代表dp[i+1], dp[i+2], dp[i]
+  let dp_i_1 = 0, dp_i_2 = 0, dp_i = 0;
+
+  for (let i = nums.length - 1; i >= 0; i--) {
+    dp_i = Math.max(dp_i_1, dp_i_2 + nums[i]);
+    dp_i_2 = dp_i_1;
+    dp_i_1 = dp_i;
   }
 
-  return dp_0;
+  return dp_i;
 }
 
+// console.log(robFirstByVariable([1,2,3,1]));
+// console.log(robFirstByVariable([2,7,9,3,1]));

@@ -89,13 +89,14 @@ function robThirdByVariable(root: RobTreeNode | null): number {
     const right = dp(node.right);
 
     // 抢
-    const do_it = node.val + Math.max(left[1], right[1]);
+    const do_it: number = node.val + left[0] + right[0];
     
     // 不抢
-    const no_do_it = Math.max();
-    return [1, 1];
-    
+    const no_do_it: number = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+    return [no_do_it, do_it];
   }
 
-  return 1;
+  const res = dp(root);
+
+  return Math.max(res[0], res[1]);
 }

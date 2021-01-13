@@ -21,8 +21,6 @@ export function countingSort (arr: number[]): number[] {
     bucket[arr[i]]++;
   }
 
-  console.log(bucket, 'bucket')
-
   let sortedIndex = 0;
 
   for (let i = 0; i < bucket.length; i++) {

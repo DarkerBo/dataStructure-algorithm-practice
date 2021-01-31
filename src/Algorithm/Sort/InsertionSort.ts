@@ -7,11 +7,27 @@
  */
 export function insertionSort<T>(arr: T[]): T[] {
   for (let i = 1; i <= arr.length - 1; i++) {
+
+    let j;
+    const e = arr[i];
+    for (j = i; j > 0 && arr[j - 1] > e; j--) {
+      arr[j] = arr[j - 1];
+    }
+
+    arr[j] = e;
+
+    /*
+    // 这种方法也可以，但是多了很多的时间复杂度
+    如[a,b,c,d,e]，当 i = 3时，其实索引0-2已经排好序了，但这里还是要从索引3开始往索引1比较，多次重复0-2的比较
+
     for (let j = i - 1; j >= 0; j--) {
       if (arr[j] > arr[j + 1]) {
         [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
       }
     }
+    */
+
+
   }
 
   return arr;

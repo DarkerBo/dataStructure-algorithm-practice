@@ -7,7 +7,6 @@
  
 
 示例 1：
-
 输入：triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
 输出：11
 解释：如下面简图所示：
@@ -16,8 +15,8 @@
  6 5 7
 4 1 8 3
 自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
-示例 2：
 
+示例 2：
 输入：triangle = [[-10]]
 输出：-10
 
@@ -54,3 +53,53 @@ dp[0][0]就是答案
 
 */
 
+
+
+// 备忘录写法
+function triangleMiniTotalByMemo(triangle: number[][]): number {
+	const memo = new Map();
+	const dp = (row: number, column: number) => {
+		if (row === triangle.length - 1) {
+			return triangle[row][column];
+		}
+
+		if (memo.has(`${row}-${column}`)) return memo.get(`${row}-${column}`);
+
+		const res: number = Math.min(dp(row + 1, column), dp(row + 1, column + 1)) + triangle[row][column];
+		memo.set(`${row}-${column}`, res);
+
+		return res;
+	}
+
+	return dp(0, 0);
+};
+
+console.log(triangleMiniTotalByMemo([[2],[3,4],[6,5,7],[4,1,8,3]]));
+console.log(triangleMiniTotalByMemo([[-1], [-2, -3]]));
+console.log(triangleMiniTotalByMemo([[-1],[2,3],[1,-1,-3]]));
+
+
+// DP写法
+function triangleMiniTotalByDP(triangle: number[][]): number {
+	const n = triangle.length;
+	const dp = Array.from(new Array(n), () => new Array(n));
+
+	for (let row = n - 1; row >= 0; row--) {
+		for (let column = 0; column <= triangle[row].length; column++) {
+			// base case
+			if (row === n - 1) {
+				dp[row][column] = triangle[row][column];
+			} else {
+				// 该节点的路径和最小值为它下一行两个相邻节点路径和的最小值 + 当前节点的值
+				dp[row][column] = Math.min(dp[row + 1][column], dp[row + 1][column + 1]) + triangle[row][column];
+			}
+		}
+	}
+
+	return dp[0][0];
+}
+
+
+console.log(triangleMiniTotalByDP([[2],[3,4],[6,5,7],[4,1,8,3]]));
+console.log(triangleMiniTotalByDP([[-1], [-2, -3]]));
+console.log(triangleMiniTotalByDP([[-1],[2,3],[1,-1,-3]]));

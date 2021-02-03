@@ -6,27 +6,27 @@
 // 熟悉回溯框架写法: 使用track数组装载路径
 export function permute(nums: number[]): Array<number[]> {
   const res: Array<number[]> = [];
-  const track: number[] = [];
+  const track = new Set<number>();
 
   _permute(nums, track, res);
   return res;
 }
 
 // 辅助函数，也是框架函数
-function _permute(nums: number[], track: number[], res: Array<number[]>): void {
-  if (track.length === nums.length) {
+function _permute(nums: number[], track: Set<number>, res: Array<number[]>): void {
+  if (track.size === nums.length) {
     // Array.from是为了防止res内的路径track指向同一个地址，最终全为[]
     res.push(Array.from(track));
     return;
   }
 
   for (let i = 0; i < nums.length; i++) {
-    // 这里的复杂度有点高,而且若nums有重复数据也不能有效判断
-    if (track.includes(nums[i])) continue;
+    // 这里若nums有重复数据不能有效判断
+    if (track.has(nums[i])) continue;
 
-    track.push(nums[i]);
+    track.add(nums[i]);
     _permute(nums, track, res);
-    track.pop();
+    track.delete(nums[i]);
   }
 }
 

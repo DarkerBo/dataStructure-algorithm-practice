@@ -10,6 +10,7 @@ export function insertionSort<T>(arr: T[]): T[] {
 
     let j;
     const e = arr[i];
+    // 不满足条件 j > 0 && arr[j - 1] 的话, 是不会执行 j-- 的，因此这里是性能优化的一步
     for (j = i; j > 0 && arr[j - 1] > e; j--) {
       arr[j] = arr[j - 1];
     }

@@ -76,6 +76,7 @@ function leftBoundSearchByEqual(nums: number[], target: number): number {
     else if (nums[mid] > target) right = mid - 1; // 搜索区间变为 [left, mid-1]
   }
 
+  // target大于数组所有元素 || target小于数组所有元素
   if (left === nums.length || nums[left] !== target) return -1;
 
   return left;

@@ -188,11 +188,7 @@ function getParentNodesByLoop<E>(data: DFSTreeType<E>[], target: E): DFSTreeType
 
       if (item.children && item.children.length > 0) {
         const childStack = findNode(item.children, target);
-        if (childStack.length === 0) {
-          stack.pop();
-        } else {
-          return stack;
-        }
+        if (childStack.length !== 0) return stack;
       }
       stack.pop();
     }

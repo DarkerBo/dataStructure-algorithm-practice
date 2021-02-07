@@ -47,7 +47,7 @@ function lengthOfLongestSubstring(s: string): number {
       left++;
       window.set(d, window.get(d) - 1);
     }
-    // 在这里更新答案
+    // 在这里更新答案，不能在左移窗口前更新，因为此时窗口已经有重复的元素了，此时right - left的长度是不准确的,需要-1个长度
     count = Math.max(count, right - left);
   }
 

@@ -57,6 +57,7 @@ function rightBoundSearchByEqual(nums: number[], target: number): number {
     else if (nums[mid] > target) right = mid - 1;
   }
 
+  // target大于数组所有元素 || target小于数组所有元素
   if (right < 0 || nums[right] !== target) return -1;
   
   return right;

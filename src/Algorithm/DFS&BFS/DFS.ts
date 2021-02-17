@@ -188,11 +188,7 @@ function getParentNodesByLoop<E>(data: DFSTreeType<E>[], target: E): DFSTreeType
 
       if (item.children && item.children.length > 0) {
         const childStack = findNode(item.children, target);
-        if (childStack.length === 0) {
-          stack.pop();
-        } else {
-          return stack;
-        }
+        if (childStack.length !== 0) return stack;
       }
       stack.pop();
     }
@@ -203,3 +199,34 @@ function getParentNodesByLoop<E>(data: DFSTreeType<E>[], target: E): DFSTreeType
 }
 
 console.log(getParentNodesByLoop(dfsTree, '2-2-2'));
+
+
+// 思路3：回溯法
+function getParentNodesByBackTrack<E>(data: DFSTreeType<E>[], target: E): DFSTreeType<E>[] {
+  const res: DFSTreeType<E>[] = [];
+  const track: DFSTreeType<E>[] = [];
+  _getParentNodesByBackTrack(data, target, track, res);
+
+  return res;
+}
+
+// 回溯法辅助函数
+function _getParentNodesByBackTrack<E>(data: DFSTreeType<E>[], target: E, track: DFSTreeType<E>[], res: DFSTreeType<E>[]) {
+  // 如果没有children节点，仍传递，在这里return掉
+  // 或者已经有一条路径了就return
+  if (!data || res.length > 0) return; 
+
+  // 找到对应的节点，就把路径返回
+  if (track[track.length - 1]?.e === target) {
+    res.push(...Array.from(track));
+    return;
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    track.push(data[i]);
+    _getParentNodesByBackTrack(data[i].children || [], target, track, res);
+    track.pop();
+  }
+}
+
+console.log(getParentNodesByBackTrack(dfsTree, '2-2-2'));

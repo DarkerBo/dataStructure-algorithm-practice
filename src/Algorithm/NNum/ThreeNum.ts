@@ -47,13 +47,42 @@ vector<vector<int>> threeSumTarget(vector<int>& nums, int target) {
 
 */
 
-// function threeSum(nums: number[], target: number): number[][] {
+function threeSum(nums: number[], target: number): number[][] {
+	const sortNums = nums.sort((a, b) => a - b);
+	const res = [];
 
-// };
+	for (let i = 0; i < sortNums.length; i++) {
+		const targetArr = twoSumTarget(sortNums, target - sortNums[i], i + 1);
+		for (const item of targetArr) {
+			res.push([sortNums[i], ...item]);
+		}
+
+		while (i < nums.length - 1 && sortNums[i] === sortNums[i + 1]) i++; 
+	}
+
+	return res;
+};
 
 // 两数之和辅助函数
-// function twoSumTarget(nums: number[], target: number): number[][] {
-//   let left = 0, right = nums.length - 1;
-//   const res = [];
+function twoSumTarget(nums: number[], target: number, start: number): number[][] {
 
-// }
+  let left = start, right = nums.length - 1;
+  const res = [];
+
+	while (left < right) {
+		const sum = nums[left] + nums[right];
+		const leftValue = nums[left], rightValue = nums[right];
+
+		if (sum < target) {
+			while (left < right && nums[left] === leftValue) left++;
+		} else if (sum > target) {
+			while (left < right && nums[right] === rightValue) right--; 
+		} else {
+			res.push([nums[left], nums[right]]);
+			while (left < right && nums[left] === leftValue) left++;
+			while (left < right && nums[right] === rightValue) right--; 
+		}
+	}
+
+	return res;
+}

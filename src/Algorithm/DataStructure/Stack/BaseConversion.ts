@@ -1,5 +1,5 @@
 // 《学习JavaScript数据结构与算法》（第三版）的栈章节 -- 进制转换题目
-import { ObjectStack } from '../../DataStructure/Stack';
+import { ObjectStack } from '../../../DataStructure/Stack';
 
 // 二进制转换
 export function decimalToBinary(decNumber: number): string {

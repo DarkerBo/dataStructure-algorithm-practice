@@ -98,7 +98,7 @@ function connectTreeTwoNode(node1: ConnectTreeNode | null, node2: ConnectTreeNod
 
 ---------------------------------------------------------------
 
-比较好的方法是用层序遍历
+比较好的方法是用层序遍历(广度优先遍历)
 
 */
 
@@ -142,25 +142,29 @@ function connectTreeTwoNode(node1: ConnectTreeNode | null, node2: ConnectTreeNod
   connectTreeTwoNode(node1.right, node2.left);
 }
 
+/* ----------------------------------------------------------------------------------------- */
 
 // 【层序遍历】
-// function connectTreeByLevelTravers(root: ConnectTreeNode | null): ConnectTreeNode | null {
-//   const queue: (ConnectTreeNode | null)[] = [root];
+function connectTreeByLevelTravers(root: ConnectTreeNode | null): ConnectTreeNode | null {
+  if (root === null) return null;
+
+  const queue: ConnectTreeNode[] = [root];
   
-//   while (queue.length > 0) {
-//     // 当前层的所有元素总数量
-//     const queueLength = queue.length;
-//     const queueFront = queue.shift() as ConnectTreeNode;
+  while (queue.length > 0) {
+    // 当前层的所有元素总数量
+    const queueLength = queue.length;
 
-//     for (let i = 0; i < queueLength) {
+    // 将当前层的左右节点连接，包括不是同一个父节点的, 然后左右子节点放到队列的后面
+    for (let i = 0; i < queueLength; i++) {
+      const queueFront = queue.shift() as ConnectTreeNode;
 
-//     }
-     
-    
-//     if (queueFront.left) queue.push(queueFront.left);
-//     if (queueFront.right) queue.push(queueFront.right);
+      queueFront.next = i === queueLength - 1 ? null : queue[i + 1];
 
+      if (queueFront.left) queue.push(queueFront.left);
+      if (queueFront.right) queue.push(queueFront.right);
+    }
+  }
 
-//   }
-  
-// }
+  return root;
+}
+

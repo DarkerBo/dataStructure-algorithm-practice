@@ -30,6 +30,8 @@
 s 由英文字母、数字、符号和空格组成
 */
 
+
+// 滑动窗口做法
 function lengthOfLongestSubstring(s: string): number {
   // window表示窗口包含的字母和它的个数
   const window = new Map();
@@ -59,3 +61,39 @@ console.log(lengthOfLongestSubstring('bbbbb'));
 console.log(lengthOfLongestSubstring('pwwkew'));
 console.log(lengthOfLongestSubstring(''));
 console.log(lengthOfLongestSubstring(' '));
+
+
+
+// 哈希表做法
+function lengthOfLongestSubstringByMap(s: string): number {
+  // 存储某个字母对应的最新索引
+  const map = new Map<string, number>();
+
+  // 左指针，代表计算字串长度的开始索引
+  let left = 0;
+  // 不重复子串的最大长度
+  let max = 0;
+
+  for (let i = 0; i < s.length; i++) {
+    // 如果子串有重复元素，更新left
+    if (map.has(s[i])) {
+      // 这里要用max的原因是防止左指针回退，保持最新的子串起点
+      // 比如abba，i为3时,b重复了，left更新为3。
+      // 然后i为4时，因为map中a的索引为0，如果此时不用max比较的话，left会回退到 0 + 1 = 1，而不是正确的索引3
+      left = Math.max(left, map.get(s[i]) as number + 1);
+    }
+
+    map.set(s[i], i);
+
+    max = Math.max(max, i - left + 1);
+  }
+
+  return max;
+}
+
+
+console.log(lengthOfLongestSubstringByMap('abcabcbb'));
+console.log(lengthOfLongestSubstringByMap('bbbbb'));
+console.log(lengthOfLongestSubstringByMap('pwwkew'));
+console.log(lengthOfLongestSubstringByMap(''));
+console.log(lengthOfLongestSubstringByMap(' '));

@@ -41,7 +41,7 @@ class FlatterTreeNode {
   val: number
   left: FlatterTreeNode | null
   right: FlatterTreeNode | null
-  constructor(val?: number, left?: ConnectTreeNode, right?: ConnectTreeNode) {
+  constructor(val?: number, left?: FlatterTreeNode, right?: FlatterTreeNode) {
     this.val = (val === undefined ? 0 : val)
     this.left = (left === undefined ? null : left)
     this.right = (right === undefined ? null : right)

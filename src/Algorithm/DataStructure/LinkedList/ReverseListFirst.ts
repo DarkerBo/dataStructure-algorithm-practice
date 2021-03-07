@@ -18,6 +18,7 @@ class ReverseListFirstNode {
   }
 }
 
+// 压栈写法
 function reverseList(head: ReverseListFirstNode | null): ReverseListFirstNode | null {
   if (head === null) return null;
   
@@ -124,6 +125,7 @@ head.next = null;
 
 */
 
+// 递归写法
 function reverseListByRecursion(head: ReverseListFirstNode | null): ReverseListFirstNode | null {
   if (head === null) return null;
   
@@ -136,4 +138,3 @@ function reverseListByRecursion(head: ReverseListFirstNode | null): ReverseListF
 
   return last;
 }
-

@@ -9,26 +9,26 @@
 
 */
 
-class ReverseListFirstNode {
+class ReverseListAll {
   public val: number;
-  public next: ReverseListFirstNode | null;
-  constructor (val?: number, next?: ReverseListFirstNode | null) {
+  public next: ReverseListAll | null;
+  constructor (val?: number, next?: ReverseListAll | null) {
     this.val = val === undefined ? 0 : val;
     this.next = next === undefined ? null : next;
   }
 }
 
 // 压栈写法
-function reverseList(head: ReverseListFirstNode | null): ReverseListFirstNode | null {
+function reverseListAll(head: ReverseListAll | null): ReverseListAll | null {
   if (head === null) return null;
   
   // 前后双指针
-  let cur: ReverseListFirstNode | null = head, 
-      prev: ReverseListFirstNode | null = null;
+  let cur: ReverseListAll | null = head, 
+      prev: ReverseListAll | null = null;
 
   // cur为 null 的时候链表已经反转完成
   while (cur) {
-    const nextNode: ReverseListFirstNode | null = cur.next;
+    const nextNode: ReverseListAll | null = cur.next;
     cur.next = prev;
     prev = cur;
     cur = nextNode;
@@ -126,13 +126,13 @@ head.next = null;
 */
 
 // 递归写法
-function reverseListByRecursion(head: ReverseListFirstNode | null): ReverseListFirstNode | null {
+function reverseListAllByRecursion(head: ReverseListAll | null): ReverseListAll | null {
   if (head === null) return null;
   
   // 递归到最后一个节点的时候直接返回，最终返回的就是整个反转的链表
   if (head.next === null) return head;
   
-  const last = reverseListByRecursion(head.next);
+  const last = reverseListAllByRecursion(head.next);
   head.next.next = head;
   head.next = null;
 

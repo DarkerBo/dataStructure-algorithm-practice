@@ -97,6 +97,7 @@ class PalindromeList {
 }
 
 // 后续遍历对比首尾的值
+// 有局限：right指针是从链首到链末的，不是到中间，也就是说，与left指针对比了两次链表的每一个节点
 function isPalindromeListByBackTravers(head: PalindromeList | null): boolean {
   if (head === null) return true;
 
@@ -125,4 +126,20 @@ function isPalindromeListByBackTravers(head: PalindromeList | null): boolean {
 
   return _isPalindromeListByBackTravers(right);
 };
+
+
+// 找到中间节点，反转后半链表，首位对比
+// function isPalindromeListByMidNode(head: PalindromeList | null): boolean {
+//   if (head === null) return true;
+
+//   // 通过快慢指针找到链表的中间节点
+//   let slow: PalindromeList | null = head,
+//       fast: PalindromeList | null = head;
+  
+//   while (slow && fast !== null && fast.next !== null) {
+//     slow = slow.next;
+//     fast = fast.next.next;
+//   }
+  
+// }
 

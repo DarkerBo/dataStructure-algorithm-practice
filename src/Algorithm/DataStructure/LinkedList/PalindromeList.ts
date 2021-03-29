@@ -136,10 +136,26 @@ function isPalindromeListByBackTravers(head: PalindromeList | null): boolean {
 //   let slow: PalindromeList | null = head,
 //       fast: PalindromeList | null = head;
   
-//   while (slow && fast !== null && fast.next !== null) {
-//     slow = slow.next;
+//   while (fast !== null && fast.next !== null) {
+//     slow = (slow as PalindromeList).next;
 //     fast = fast.next.next;
 //   }
-  
+
+//   // 如果是奇数链表的话，slow指针还要往前一位，原因是最中间的那个节点不用对比
+//   if (fast === null) {
+//     slow = (slow as PalindromeList).next;
+//   }
+
+//   let cur: PalindromeList | null = slow,
+//       prev: PalindromeList | null = null;
+
+//   while (cur) {
+//     const nextNode = cur.next;
+//     cur.next = prev;
+//     prev = cur;
+//     cur = nextNode;
+//   }
+
+
 // }
 

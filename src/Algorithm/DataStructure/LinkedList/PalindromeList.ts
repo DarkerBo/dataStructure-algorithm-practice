@@ -128,34 +128,140 @@ function isPalindromeListByBackTravers(head: PalindromeList | null): boolean {
 };
 
 
+/*
+二、优化空间复杂度
+
+更好的思路是这样的：
+1、先通过「双指针技巧」中的快慢指针来找到链表的中点：
+let slow: PalindromeList | null = head,
+    fast: PalindromeList | null = head;
+
+while (fast !== null && fast.next !== null) {
+  slow = (slow as PalindromeList).next;
+  fast = fast.next.next;
+}
+// slow 指针现在指向链表中点
+     head      slow      fast
+奇数： 1 -> 2 -> 3 -> 4 -> 5 -> null
+
+     head           slow            fast
+偶数： 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> null
+
+
+2、如果fast指针没有指向null，说明链表长度为奇数，slow还要再前进一步：
+
+if (fast !== null) {
+  slow = (slow as PalindromeList).next;
+}
+
+     head           slow  fast
+奇数： 1 -> 2 -> 3 -> 4 -> 5 -> null
+【此时对比的是链表的两端到中间，即 1->2 和 5->4】
+
+     head           slow            fast
+偶数： 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> null
+【此时对比的是链表的两端到中间，即 1->3 和 6->4】
+
+
+3、从slow开始反转后面的链表，现在就可以开始比较回文串了：
+// 反转后半段链表
+slow = isPalindromeListReverse(slow, null);
+     left                right
+     head                slow 
+奇数： 1 -> 2 -> 3 -> 4 <- 5 
+                     ⇓
+                    null
+
+     left                     right
+     head                     slow            
+偶数： 1 -> 2 -> 3 -> 4 <- 5 <- 6
+                     ⇓
+                    null
+
+算法总体的时间复杂度 O(N)，空间复杂度 O(1)，已经是最优的了
+。
+我知道肯定有读者会问：这种解法虽然高效，但破坏了输入链表的原始结构，能不能避免这个瑕疵呢？
+
+其实这个问题很好解决，关键在于得到p, q这两个指针位置：
+               left              
+                p   slow       q            
+偶数： 1 -> 2 -> 3 -> 4 <- 5 <- 6
+                     ⇓
+                    null
+                    right
+
+这样，只要在函数 return 之前加一段代码即可恢复原先链表顺序：
+
+// 恢复为原链表
+p.next = isPalindromeListReverse(q, null);
+
+
+三、最后总结
+首先，寻找回文串是从中间向两端扩展，判断回文串是从两端向中间收缩。对于单链表，无法直接倒序遍历，可以造一条新的反转链表，可以利用链表的后序遍历，也可以用栈结构倒序处理单链表。
+
+具体到回文链表的判断问题，由于回文的特殊性，可以不完全反转链表，而是仅仅反转部分链表，将空间复杂度降到 O(1)。
+
+*/
+
+
+
 // 找到中间节点，反转后半链表，首位对比
-// function isPalindromeListByMidNode(head: PalindromeList | null): boolean {
-//   if (head === null) return true;
+function isPalindromeListByMidNode(head: PalindromeList | null): boolean {
+  if (head === null) return true;
 
-//   // 通过快慢指针找到链表的中间节点
-//   let slow: PalindromeList | null = head,
-//       fast: PalindromeList | null = head;
+  // 通过快慢指针找到链表的中间节点
+  let slow: PalindromeList | null = head,
+      fast: PalindromeList | null = head;
   
-//   while (fast !== null && fast.next !== null) {
-//     slow = (slow as PalindromeList).next;
-//     fast = fast.next.next;
-//   }
+  while (fast !== null && fast.next !== null) {
+    slow = (slow as PalindromeList).next;
+    fast = fast.next.next;
+  }
 
-//   // 如果是奇数链表的话，slow指针还要往前一位，原因是最中间的那个节点不用对比
-//   if (fast === null) {
-//     slow = (slow as PalindromeList).next;
-//   }
+  // 如果是奇数链表的话，slow指针还要往前一位，原因是最中间的那个节点不用对比
+  if (fast !== null) {
+    slow = (slow as PalindromeList).next;
+  }
 
-//   let cur: PalindromeList | null = slow,
-//       prev: PalindromeList | null = null;
+  // 反转后半段链表
+  slow = isPalindromeListReverse(slow, null);
 
-//   while (cur) {
-//     const nextNode = cur.next;
-//     cur.next = prev;
-//     prev = cur;
-//     cur = nextNode;
-//   }
+  // 左右指针开始从两端对比
+  let left: PalindromeList | null = head,
+      right: PalindromeList | null = slow;
 
+  // 这是拿来恢复原链表的指针
+  let p: PalindromeList | null = head,
+      q: PalindromeList | null = slow;
 
-// }
+  // 判断是否为回文链表
+  let flag = true;
 
+  while (right) {
+    if (left.val !== right.val) flag = false;
+    left = left.next as PalindromeList;
+    right = right.next;
+    p = left;
+  }
+
+  // 恢复为原链表
+  p.next = isPalindromeListReverse(q, null);
+
+  return flag;
+}
+
+// 根据两个节点反转链表
+function isPalindromeListReverse(cur: PalindromeList | null, prev: PalindromeList | null): PalindromeList | null {
+  while (cur && cur !== prev) {
+    const nextNode = cur.next;
+    cur.next = prev;
+    prev = cur;
+    cur = nextNode;
+  }
+
+  return prev;
+}
+
+const list = new PalindromeList(1, new PalindromeList(2, new PalindromeList(3, new PalindromeList(4, new PalindromeList(5)))));
+
+console.log(isPalindromeListByMidNode(list));

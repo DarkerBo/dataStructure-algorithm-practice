@@ -77,7 +77,7 @@ class ReverseListBetweenNode {
 
 import { reverseNByRecursion } from './ReverseListN';
 
-// 压栈写法
+// 插入写法
 function reverseBetween(head: ReverseListBetweenNode | null, left: number, right: number): ReverseListBetweenNode | null {
 	if (head === null) return null;
 
@@ -106,11 +106,45 @@ function reverseBetween(head: ReverseListBetweenNode | null, left: number, right
 	return dummyNode.next;
 }
 
+// 压栈写法
+function reverseBetweenByStack(head: ReverseListBetweenNode | null, left: number, right: number): ReverseListBetweenNode | null {
+	if (head === null) return null;
+
+	let	prev: ReverseListBetweenNode | null = head,
+      cur: ReverseListBetweenNode | null = head,
+			startPoint: ReverseListBetweenNode | null = head;
+
+  for (let i = 0; i < right - 1; i++) {
+		// 要放在prev赋值的上面，否则就会去到需要反转的头部的下一个
+		if (i === left - 1) startPoint = prev;
+		if (i === left) cur = prev;
+
+    if (prev) prev = prev.next;
+    else return head;
+  }
+
+	// 区间外的下一个点
+	const endPoint = prev;
+
+	// 对比反转整个链表的区别在于这里的 cur 相当于反转全部的 null
+  while (cur && cur !== endPoint) {
+    const nextNode: ReverseListBetweenNode | null = cur.next;
+    cur.next = prev;
+    prev = cur;
+    cur = nextNode;
+  }
+
+	(startPoint as ReverseListBetweenNode).next = prev;
+
+	return head;
+}
+
 
 // 递归写法
 function reverseBetweenByRecursion(head: ReverseListBetweenNode | null, m: number, n: number): ReverseListBetweenNode | null {
 	if (head === null) return null; 
 
+	// 当m为1的时候，相当于反转链表的前N个
 	if (m === 1) {
 		return reverseNByRecursion(head, n);
 	}
@@ -121,7 +155,8 @@ function reverseBetweenByRecursion(head: ReverseListBetweenNode | null, m: numbe
 
 const list = new ReverseListBetweenNode(1, new ReverseListBetweenNode(2, new ReverseListBetweenNode(3, new ReverseListBetweenNode(4, new ReverseListBetweenNode(5)))));
 
-console.log(reverseBetween(list, 2, 4));
+// console.log(reverseBetween(list, 2, 4)?.next?.next);
+// console.log(reverseBetweenByStack(list, 2, 4)?.next?.next);
 
 // const list = new ReverseListBetweenNode(1,new ReverseListBetweenNode(2))
 

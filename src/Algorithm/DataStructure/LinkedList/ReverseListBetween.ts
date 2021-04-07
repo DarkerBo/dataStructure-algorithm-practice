@@ -110,14 +110,15 @@ function reverseBetween(head: ReverseListBetweenNode | null, left: number, right
 function reverseBetweenByStack(head: ReverseListBetweenNode | null, left: number, right: number): ReverseListBetweenNode | null {
 	if (head === null) return null;
 
-	let	prev: ReverseListBetweenNode | null = head,
-      cur: ReverseListBetweenNode | null = head,
-			startPoint: ReverseListBetweenNode | null = head;
+	const dummyNode = new ReverseListBetweenNode(0, head);
 
-  for (let i = 0; i < right - 1; i++) {
-		// 要放在prev赋值的上面，否则就会去到需要反转的头部的下一个
-		if (i === left - 1) startPoint = prev;
-		if (i === left) cur = prev;
+	let	prev: ReverseListBetweenNode | null = dummyNode,
+      cur: ReverseListBetweenNode | null = dummyNode,
+			startPoint: ReverseListBetweenNode | null = dummyNode;
+
+  for (let i = 0; i <= right; i++) {
+		if (i < left - 1) startPoint = (startPoint as ReverseListBetweenNode).next;
+		if (i < left) cur = (cur as ReverseListBetweenNode).next;
 
     if (prev) prev = prev.next;
     else return head;
@@ -136,7 +137,7 @@ function reverseBetweenByStack(head: ReverseListBetweenNode | null, left: number
 
 	(startPoint as ReverseListBetweenNode).next = prev;
 
-	return head;
+	return dummyNode.next;
 }
 
 
@@ -153,7 +154,9 @@ function reverseBetweenByRecursion(head: ReverseListBetweenNode | null, m: numbe
 	return head;
 }
 
-const list = new ReverseListBetweenNode(1, new ReverseListBetweenNode(2, new ReverseListBetweenNode(3, new ReverseListBetweenNode(4, new ReverseListBetweenNode(5)))));
+// const list = new ReverseListBetweenNode(1, new ReverseListBetweenNode(2, new ReverseListBetweenNode(3, new ReverseListBetweenNode(4, new ReverseListBetweenNode(5)))));
+
+// const list = new ReverseListBetweenNode(1, new ReverseListBetweenNode(2));
 
 // console.log(reverseBetween(list, 2, 4)?.next?.next);
 // console.log(reverseBetweenByStack(list, 2, 4)?.next?.next);
@@ -161,3 +164,4 @@ const list = new ReverseListBetweenNode(1, new ReverseListBetweenNode(2, new Rev
 // const list = new ReverseListBetweenNode(1,new ReverseListBetweenNode(2))
 
 // console.log(reverseBetween(list, 1, 2));
+// console.log(reverseBetweenByStack(list, 1, 2));

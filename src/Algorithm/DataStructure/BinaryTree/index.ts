@@ -76,4 +76,15 @@ function count(TreeNode root): number {
 
 写二叉树的算法题，都是基于递归框架的，我们先要搞清楚root节点它自己要做什么，然后根据题目要求选择使用前序，中序，后续的递归框架。
 
+五、二叉搜索树的遍历框架
+
+function BST(root: TreeNode, target: number): void {
+  if (root.val === target)
+    // 找到目标，做点什么
+  if (root.val < target) 
+    BST(root.right, target);
+  if (root.val > target)
+    BST(root.left, target);
+}
+
 */

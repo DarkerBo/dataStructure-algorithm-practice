@@ -61,12 +61,17 @@ function robFirstByMemo(nums: number[]): number {
 // 一般dp都是要加长一点长度，比nums大
 function robFirstByDP(nums: number[]): number {
   const n = nums.length;
-  const dp = new Array(n + 2).fill(0);
-  for (let i = n - 1; i >= 0; i--) {
-    dp[i] = Math.max(dp[i + 1], dp[i + 2] + nums[i]);
+  if (n === 0) return 0;
+  const dp = new Array(n);
+  // base case
+  dp[0] = nums[0];
+  dp[1] = Math.max(nums[0], nums[1]);
+
+  for (let i = 2; i < n; i++) {
+    dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
   }
 
-  return dp[0];
+  return dp[n - 1];
 }
 
 // console.log(robFirstByDP([1,2,3,1]));
@@ -76,17 +81,19 @@ console.log(robFirstByDP([1,2,3]));
 
 // 空间复杂度为O(1)的变量写法
 function robFirstByVariable(nums: number[]): number {
+  if (nums.length === 0) return 0;
 
-  // 分别代表dp[i+1], dp[i+2], dp[i]
-  let dp_i_1 = 0, dp_i_2 = 0, dp_i = 0;
-
-  for (let i = nums.length - 1; i >= 0; i--) {
-    dp_i = Math.max(dp_i_1, dp_i_2 + nums[i]);
-    dp_i_2 = dp_i_1;
-    dp_i_1 = dp_i;
+  // dp_0代表上一间能抢的最大，dp_1代表当前可以抢的最大
+  let dp_0 = 0, dp_1 = nums[0];
+  // 这里i从1开始是因为有dp_0这个一开始的虚拟节点
+  for (let i = 1; i < nums.length; i++) {
+    const temp = dp_1;
+    // 这里左边的dp_1是最新的，右边的dp_1已经是上一个房间的，dp_0是上两个房间
+    dp_1 = Math.max(dp_1, dp_0 + nums[i]);
+    dp_0 = temp;
   }
 
-  return dp_i;
+  return dp_1;
 }
 
 // console.log(robFirstByVariable([1,2,3,1]));

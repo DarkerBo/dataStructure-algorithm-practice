@@ -65,17 +65,25 @@ function robSecondByDP(nums: number[]): number {
   const n = nums.length;
   if (n === 1) return nums[0];
   
-  const _robSecondByDP = (nums: number[], start: number, end: number) => {
-    // 长度还是要为 n + 2，因为end有可能为 n - 1，也可以写成 end - start + 4
-    const dp = new Array(end - start + 4).fill(0);
-    for (let i = end; i >= start; i--) {
-      dp[i] = Math.max(dp[i + 1], dp[i + 2] + nums[i]);
-    }
+  
 
-    return dp[start];
+  return Math.max(_robSecondByDP(nums.slice(0, n - 1)), _robSecondByDP(nums.slice(1)));
+}
+
+// DP写法辅助函数
+const _robSecondByDP = (nums: number[]): number => {
+  const n = nums.length;
+  if (n === 0) return 0;
+
+  const dp = new Array(n);
+  dp[0] = nums[0];
+  dp[1] = Math.max(nums[0], nums[1]);
+
+  for (let i = 2; i < n; i++) {
+    dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
   }
 
-  return Math.max(_robSecondByDP(nums, 0, n - 2), _robSecondByDP(nums, 1, n - 1));
+  return dp[n - 1];
 }
 
 // console.log(robSecondByDP([2,3,2]));
@@ -88,17 +96,19 @@ function robSecondByDP(nums: number[]): number {
 function robSecondByVariable(nums: number[]): number {
   const n = nums.length;
   if (n === 1) return nums[0];
-  
-  const _robSecondByVariable = (nums: number[], start: number, end: number) => {
-    let dp_i_1 = 0, dp_i_2 = 0, dp_i = 0;
-    for (let i = end; i >= start; i--) {
-      dp_i = Math.max(dp_i_1, dp_i_2 + nums[i]);
-      dp_i_2 = dp_i_1;
-      dp_i_1 = dp_i;
-    }
 
-    return dp_i;
+  return Math.max(_robSecondByVariable(nums.slice(0, n - 1)), _robSecondByVariable(nums.slice(1)));
+}
+
+const _robSecondByVariable = (nums: number[]): number => {
+  if (nums.length === 0) return 0;
+
+  let dp_0 = 0, dp_1 = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    const temp = dp_1;
+    dp_1 = Math.max(dp_1, dp_0 + nums[i]);
+    dp_0 = temp;
   }
 
-  return Math.max(_robSecondByVariable(nums, 0, n - 2), _robSecondByVariable(nums, 1, n - 1));
+  return dp_1;
 }

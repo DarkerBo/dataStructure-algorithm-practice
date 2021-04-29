@@ -46,8 +46,38 @@ class SerializeNode {
   }
 }
 
+/* -----------------------  前序遍历  ---------------------------- */
 // 序列化
-function serialize(root: SerializeNode | null): string {
+function serializeByFront(root: SerializeNode | null): string {
+  if (root === null) return '@';
+  return `${root.val},${serializeByFront(root.left)},${serializeByFront(root.right)}`;
+}
+
+// 反序列化
+function deserializeByFront(data: string): SerializeNode | null {
+  const dataArr = data.split(',');
+
+  const traverse = (arr: string[]): SerializeNode | null => {
+    if (arr.length === 0) return null;
+
+    const value = arr.shift();
+    if (value === '@') return null;
+
+    const node = new SerializeNode(Number(value));
+    node.left = traverse(arr);
+    node.right = traverse(arr);
+
+    return node;
+  }
+
+  return traverse(dataArr);
+}
+
+
+
+/* -----------------------  层序遍历  ---------------------------- */
+// 序列化
+function serializeByLevel(root: SerializeNode | null): string {
   const queue: Array<SerializeNode | null> = [root];
   // 存储节点的数组
   const dataArr = [];
@@ -58,7 +88,7 @@ function serialize(root: SerializeNode | null): string {
     for (let i = 0; i < len; i++) {
       const queueItem = queue.shift() as SerializeNode;
       if (queueItem === null) {
-        dataArr.push(null);
+        dataArr.push('@');
         continue;
       }
       dataArr.push(queueItem.val);
@@ -72,8 +102,42 @@ function serialize(root: SerializeNode | null): string {
 };
 
 // 反序列化
-// function deserialize(data: string): SerializeNode | null {
+function deserializeByLevel(data: string): SerializeNode | null {
+  if (data === '@') return null;
+
+  const dataArr = data.split(',');
   
-// };
+  // 这里要声明head的目的是为了最后返回它就是返回整棵树
+  const head = new SerializeNode(Number(data[0]));
+  const queue = [head];
+
+  // 注意：这里for循环不需要i++
+  for (let i = 1; i < dataArr.length;) {
+    // 在队列中保存的都是父组件
+    const node = queue.shift() as SerializeNode;
+
+    const leftItem = dataArr[i++];
+    if (leftItem !== '@') {
+      node.left = new SerializeNode(Number(leftItem));
+      queue.push(node.left);
+    } else {
+      node.left = null;
+    }
+
+    const rightItem = dataArr[i++];
+    if (rightItem !== '@') {
+      node.right = new SerializeNode(Number(rightItem));
+      queue.push(node.right);
+    } else {
+      node.right = null;
+    }
+  }
+
+  return head;
+};
 
 
+const tree = new SerializeNode(1, new SerializeNode(2), new SerializeNode(3, new SerializeNode(4), new SerializeNode(5)));
+
+// console.log(serializeByLevel(tree));
+// console.log(deserializeByLevel('1,2,3,@,@,4,5,@,@,@,@'));

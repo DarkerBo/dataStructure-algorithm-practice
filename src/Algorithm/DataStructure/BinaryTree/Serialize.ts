@@ -73,6 +73,31 @@ function deserializeByFront(data: string): SerializeNode | null {
   return traverse(dataArr);
 }
 
+/* -----------------------  中序遍历  ---------------------------- */
+// 序列化
+function serializeByMid(root: SerializeNode | null): string {
+  if (root === null) return '@';
+  return `${serializeByMid(root.left)},${root.val},${serializeByMid(root.right)}`;
+}
+
+// 反序列化
+// function deserializeByMid(data: string): SerializeNode | null {
+//   if (data === '@') return null;
+//   const dataArr = data.split(',');
+
+//   const traverse = (arr: string[]) => {
+//     if (arr.length === 0) return null;
+
+//     const midIndex = Math.floor(arr.length / 2);
+    
+
+//     const root = new SerializeNode(Number(arr[midIndex]));
+    
+//   }
+
+// }
+
+
 
 
 /* -----------------------  层序遍历  ---------------------------- */
@@ -108,8 +133,8 @@ function deserializeByLevel(data: string): SerializeNode | null {
   const dataArr = data.split(',');
   
   // 这里要声明head的目的是为了最后返回它就是返回整棵树
-  const head = new SerializeNode(Number(data[0]));
-  const queue = [head];
+  const root = new SerializeNode(Number(data[0]));
+  const queue = [root];
 
   // 注意：这里for循环不需要i++
   for (let i = 1; i < dataArr.length;) {
@@ -133,11 +158,12 @@ function deserializeByLevel(data: string): SerializeNode | null {
     }
   }
 
-  return head;
+  return root;
 };
 
 
 const tree = new SerializeNode(1, new SerializeNode(2), new SerializeNode(3, new SerializeNode(4), new SerializeNode(5)));
 
 // console.log(serializeByLevel(tree));
+console.log(serializeByMid(tree)); // @,2,@,1,@,4,@,3,@,5,@
 // console.log(deserializeByLevel('1,2,3,@,@,4,5,@,@,@,@'));

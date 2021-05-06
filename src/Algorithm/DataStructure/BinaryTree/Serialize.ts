@@ -92,7 +92,7 @@ function serializeByMid(root: SerializeNode | null): string {
 // 序列化
 function serializeByBack(root: SerializeNode | null): string {
   if (root === null) return '@';
-  return `${serializeByMid(root.left)},${serializeByMid(root.right)},${root.val}`;
+  return `${serializeByBack(root.left)},${serializeByBack(root.right)},${root.val}`;
 }
 
 // 反序列化
@@ -181,5 +181,6 @@ function deserializeByLevel(data: string): SerializeNode | null {
 const tree = new SerializeNode(1, new SerializeNode(2), new SerializeNode(3, new SerializeNode(4), new SerializeNode(5)));
 
 // console.log(serializeByLevel(tree));
-console.log(serializeByBack(tree));
-// console.log(deserializeByBack('@,2,@,@,4,@,3,@,5,@,1'));
+// console.log(serializeByFront(tree));
+// console.log(serializeByBack(tree));
+console.log(deserializeByBack('@,@,2,@,@,4,@,@,5,3,1'));

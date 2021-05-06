@@ -80,25 +80,41 @@ function serializeByMid(root: SerializeNode | null): string {
   return `${serializeByMid(root.left)},${root.val},${serializeByMid(root.right)}`;
 }
 
+// 中序遍历无法反序列化
+/*
+要想实现反序列方法，首先要构造 root 节点。前序遍历得到的 nodes 列表中，第一个元素是 root 节点的值；后序遍历得到的 nodes 列表中，最后一个元素是 root 节点的值。
+
+你看上面这段中序遍历的代码，root 的值被夹在两棵子树的中间，也就是在 nodes 列表的中间，我们不知道确切的索引位置，所以无法找到 root 节点，也就无法进行反序列化。
+*/
+
+
+/* -----------------------  后序遍历  ---------------------------- */
+// 序列化
+function serializeByBack(root: SerializeNode | null): string {
+  if (root === null) return '@';
+  return `${serializeByMid(root.left)},${serializeByMid(root.right)},${root.val}`;
+}
+
 // 反序列化
-// function deserializeByMid(data: string): SerializeNode | null {
-//   if (data === '@') return null;
-//   const dataArr = data.split(',');
+function deserializeByBack(data: string): SerializeNode | null {
+  if (data === '@') return null;
 
-//   const traverse = (arr: string[]) => {
-//     if (arr.length === 0) return null;
+  const dataArr = data.split(',');
 
-//     const midIndex = Math.floor(arr.length / 2);
-    
+  const traverse = (arr: string[]) => {
+    if (arr.length === 0) return null;
+    const value = dataArr.pop();
+    if (value === '@') return null;
 
-//     const root = new SerializeNode(Number(arr[midIndex]));
-    
-//   }
+    const root = new SerializeNode(Number(value));
+    root.right = traverse(arr);
+    root.left = traverse(arr);
 
-// }
+    return root;
+  }
 
-
-
+  return traverse(dataArr);
+}
 
 /* -----------------------  层序遍历  ---------------------------- */
 // 序列化
@@ -165,5 +181,5 @@ function deserializeByLevel(data: string): SerializeNode | null {
 const tree = new SerializeNode(1, new SerializeNode(2), new SerializeNode(3, new SerializeNode(4), new SerializeNode(5)));
 
 // console.log(serializeByLevel(tree));
-console.log(serializeByMid(tree)); // @,2,@,1,@,4,@,3,@,5,@
-// console.log(deserializeByLevel('1,2,3,@,@,4,5,@,@,@,@'));
+console.log(serializeByBack(tree));
+// console.log(deserializeByBack('@,2,@,@,4,@,3,@,5,@,1'));

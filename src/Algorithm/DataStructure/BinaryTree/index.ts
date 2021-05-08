@@ -11,6 +11,41 @@ function traverse(root: TreeNode) {
   // 后序遍历
 }
 
+// 层序遍历（本质就是广度优先遍历）
+function traverse(root: TreeNode) {
+  const queue = [root];
+  while (queue.length) {
+    const node = queue.shift();
+    ...
+    if (node.left) queue.push(node.left);
+    if (node.right) queue.push(node.right);
+  }
+
+  // 如果需要遍历同一层级的话（这个也能降低时间复杂度）
+  while (queue.length) {
+    const len = queue.length;
+
+    for (let i = 0; i < len; i++) {
+      const node = queue.shift();
+      ...
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+  }
+}
+
+// 深度优先遍历
+function traverse(root: TreeNode) {
+  const stack = [root];
+  while (stack.length) {
+    const node = stack.pop();
+    ...
+    if (node.left) stack.push(node.left);
+    if (node.right) stack.push(node.right);
+  }
+}
+
+
 结果还有很多读者说觉得「递归」非常难以理解，说实话，递归解法应该是最简单，最容易理解的才对，行云流水地写递归代码是学好算法的基本功，而二叉树相关的题目就是最练习递归基本功，最练习框架思维的。
 我先花一些篇幅说明二叉树算法的重要性。
 

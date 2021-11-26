@@ -89,50 +89,67 @@ LRU 缓存算法的核心数据结构就是哈希链表，双向链表和哈希�
 
 想的时候都是问题，只有做的时候才有答案。这样设计的原因，必须等我们亲自实现 LRU 算法之后才能理解，所以我们开始看代码吧～
 
+【其实JS内置了Map数据结构，可以直接使用该数据结构】
+
 */
 
-// 双向链表节点
-class LRULinkedNode {
-  public key: number;
-  public value: number;
-  public prev?: LRULinkedNode | null;
-  public next?: LRULinkedNode | null;
+export class LRUCache<K, V> {
+  // 私有化属性，防止实例访问这些属性
+  private cache: Map<K, { date: Date; value: V }>; // 缓存，里面包含过期时间和缓存值
+  private capacity: number; // 最大缓存的容量
+  private expire: number; // 过期时间
+  private deleteCallback: ((value: V) => void) | null; // 删除缓存回调
 
-  constructor(key: number, value: number) {
-    this.key = key;
-    this.value = value;
+  constructor(capacity: number, expire = 30 * 60 * 1000, deleteCallback?: (value: V) => void) {
+    this.cache = new Map();
+    this.capacity = capacity;
+    this.expire = expire;
+    this.deleteCallback = deleteCallback || null;
+  }
+
+  get(key: K): V | undefined {
+    const entity = this.cache.get(key);
+
+    if (entity) {
+      const { date, value } = entity;
+      
+      // 超时处理
+      if (Date.now() - date.getTime() > this.expire) {
+        // 超时了需要删除回调，做错误原因打印之类的操作
+        this.delete(key);
+        return undefined;
+      }
+
+      // 正确获取值的话就直接删除就ok，不需要回调
+      this.cache.delete(key);
+      // 这里注意需要更新时间
+      this.cache.set(key, { date: new Date(), value });
+      return value;
+    }
+  }
+
+  delete(key: K): void {
+    const entity = this.cache.get(key);
+
+    if (entity) {
+      const { value } = entity;
+      this.deleteCallback?.(value);
+      this.cache.delete(key);
+    }
+  }
+
+  put(key: K, value: V): void {
+    if (this.cache.has(key)) {
+      // 有的话直接删除即可，不是错误需要回调函数
+      this.cache.delete(key);
+    } else if (this.cache.size >= this.capacity) {
+      // 超出最大容量就需要错误回调了
+      const firstKey = this.cache.keys().next().value;
+      this.delete(firstKey);
+    }
+    // 每次set的时候都要记住更新一下时间
+    this.cache.set(key, { date: new Date(), value });
   }
 }
-
-
-class LRUDoubleLinked {
-  private head: LRULinkedNode;
-  private tail: LRULinkedNode;
-  private size: number;
-
-  constructor() {
-    this.head = new LRULinkedNode(0, 0);
-    this.tail = new LRULinkedNode(0, 0);
-    this.head.next = this.tail;
-    this.tail.prev = this.head;
-    this.size = 0;
-  }
-
-  // 往链表最后添加元素
-  public addLast(node: LRULinkedNode): void {
-    const prevNode = this.tail.prev as LRULinkedNode;
-    prevNode.next = node;
-    node.prev = prevNode;
-    node.next = this.tail;
-    this.tail.prev = node;
-    this.size++;
-  }
-
-  // 
-
-  
-
-}
-
 
 

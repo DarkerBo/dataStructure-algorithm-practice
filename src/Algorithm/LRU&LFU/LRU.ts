@@ -1,4 +1,4 @@
-// LRU算法
+// LRU算法 【根据访问时间排序】
 /*
 LRU 算法就是一种缓存淘汰策略，原理不难，但是面试中写出没有 bug 的算法比较有技巧，需要对数据结构进行层层抽象和拆解，本文 labuladong 就给你写一手漂亮的代码。
 
@@ -100,7 +100,11 @@ export class LRUCache<K, V> {
   private expire: number; // 过期时间
   private deleteCallback: ((value: V) => void) | null; // 删除缓存回调
 
-  constructor(capacity: number, expire = 30 * 60 * 1000, deleteCallback?: (value: V) => void) {
+  constructor(
+    capacity: number,
+    expire = 30 * 60 * 1000,
+    deleteCallback?: (value: V) => void
+  ) {
     this.cache = new Map();
     this.capacity = capacity;
     this.expire = expire;
@@ -112,7 +116,7 @@ export class LRUCache<K, V> {
 
     if (entity) {
       const { date, value } = entity;
-      
+
       // 超时处理
       if (Date.now() - date.getTime() > this.expire) {
         // 超时了需要删除回调，做错误原因打印之类的操作
@@ -151,5 +155,3 @@ export class LRUCache<K, V> {
     this.cache.set(key, { date: new Date(), value });
   }
 }
-
-

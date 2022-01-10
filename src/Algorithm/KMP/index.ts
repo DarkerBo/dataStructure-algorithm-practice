@@ -174,6 +174,61 @@ next: -1 0 0 0
 本来index为0时，模式串为A，A不匹配的话还是要从模式串起点重新匹配的。因此next值为-1，和目标串的指针i同时+1，那就完美了
 这也是为什么next表第一个是-1，而不是其他值的原因。当然不用-1，而是加一层判断那也可以。
 
+
+接下来就是【next表的构建】了
+模式串：X X Y X X Y X X X
+
+我们上面说了，每一个索引对应的next值都是，前面子串的真前缀和真后缀的最大长度
+首先声明两个指针i和j来进行前后缀的对比，i指向后缀，j指向前缀，一开始为-1。然后index[0]的next值如上面所说为-1
+判断j是否为-1，如果是，那么这一轮就跳过回溯，i和j指针往前+1，指针往前走完之后，再更新next表的值
+
+为什么是走完再更新而不是更新完再走呢？是因为当前索引的next值，其实是【它的子串的真前缀和真后缀的最大长度】，而不是它自己的
+因此它的next值其实是子串的匹配长度对应的索引
+
+    j  i
+模式串：X X Y X X Y X X X
+next  -1
+
+检测到j为-1的时候，直接i和j都+1，然后更新i的next值0
+
+       j i
+模式串：X X Y X X Y X X X
+next  -1 0
+
+匹配成功，i和j指针继续+1，更新i指针的next值为j，也就是1，继续对比
+
+         j i
+模式串：X X Y X X Y X X X
+next  -1 0 1
+
+此时i和j不匹配，因此要把j回溯到当前j指向的索引的next值。
+比如j指向索引5的时候匹配失败了，然后索引5的next值为2，那么j就回溯到索引为2中
+此时j回溯到索引为0的地方
+
+       j   i
+模式串：X X Y X X Y X X X
+next  -1 0 1
+
+此时i和j仍旧不匹配，按照回溯规则，j回溯到next值，也就是索引为-1的地方
+
+    j      i
+模式串：X X Y X X Y X X X
+next  -1 0 1
+
+此时根据判断j为-1的话，就是前面没有可回溯的索引了，然后i和j指针往前+1，同时更新i的next值0
+
+       j     i
+模式串：X X Y X X Y X X X
+next  -1 0 1 0
+
+......
+
+知道i指针走完模式串，next数组就构建完成了
+
+模式串：X X Y X X Y X X X
+next  -1 0 1 0 1 2 3 4 5
+
+
 */
 
 // 暴力算法
@@ -201,3 +256,52 @@ function BFSearch(haystack: string, needle: string) {
 }
 
 // KMP算法
+// 构建next数组
+function createNext(model: string): number[] {
+  // 第一个next值默认为-1
+  const next = [-1];
+  // i为后缀指针，j为前缀指针
+  let i = 0,
+    j = -1;
+  while (i < model.length) {
+    if (j === -1 || model[i] === model[j]) {
+      i++;
+      j++;
+      if (i < model.length) next[i] = j;
+    } else {
+      j = next[j];
+    }
+  }
+
+  console.log(next);
+
+  return next;
+}
+
+function KMPSearch(target: string, model: string): number {
+  const tLen = target.length;
+  const mLen = model.length;
+  if (tLen === 0 || mLen === 0 || tLen < mLen) return -1;
+
+  // 模式串对应的next表
+  const next = createNext(model);
+
+  // i为目标串指针，j为模式串指针
+  let i = 0,
+    j = 0;
+
+  while (i < tLen && j < mLen) {
+    if (j === -1 || target[i] === model[j]) {
+      i++;
+      j++;
+    } else {
+      j = next[j];
+    }
+  }
+
+  if (j === mLen) return i - j;
+
+  return -1;
+}
+
+console.log(KMPSearch("bbc abcdab abcdabcdabde", "abcdabd"));
